@@ -10,16 +10,26 @@
 }
 
 * { -webkit-tap-highlight-color: transparent; }
-html { scroll-behavior: smooth; }
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
 
 body {
   background-color: var(--bg);
   color: var(--ink);
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: clip;
   background-image:
     radial-gradient(900px 520px at 100% -8%, rgba(54,183,210,0.10) 0%, transparent 60%),
     radial-gradient(1100px 600px at -10% -10%, rgba(52,112,228,0.12) 0%, transparent 55%);
   background-attachment: fixed;
+}
+
+main {
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 html[lang="ar"] body { font-family: var(--font-ar), system-ui, sans-serif; }
@@ -120,6 +130,37 @@ html[lang="en"] body { font-family: var(--font-en), system-ui, sans-serif; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+.logo-shine::after {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,0.72) 50%, transparent 62%);
+  opacity: 0;
+  transform: translateX(-145%);
+  animation: logoShine 6.4s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.logo-pulse-line path {
+  stroke-dasharray: 128;
+  stroke-dashoffset: 128;
+  animation: logoPulseLine 6.4s ease-in-out infinite;
+}
+
+@keyframes logoShine {
+  0%, 72% { opacity: 0; transform: translateX(-145%); }
+  78% { opacity: 0.55; }
+  88% { opacity: 0; transform: translateX(145%); }
+  100% { opacity: 0; transform: translateX(145%); }
+}
+
+@keyframes logoPulseLine {
+  0%, 68% { stroke-dashoffset: 128; opacity: 0.45; }
+  78%, 88% { stroke-dashoffset: 0; opacity: 0.9; }
+  100% { stroke-dashoffset: 0; opacity: 0.45; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -128,4 +169,11 @@ html[lang="en"] body { font-family: var(--font-en), system-ui, sans-serif; }
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1 !important; transform: none !important; }
+  .logo-shine::after,
+  .logo-pulse-line path {
+    animation: none !important;
+  }
+  .logo-pulse-line path {
+    stroke-dashoffset: 0 !important;
+  }
 }

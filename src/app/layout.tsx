@@ -73,7 +73,7 @@ export default function RootLayout({
             تخطَّ إلى المحتوى / Skip to content
           </a>
           <SiteHeader />
-          <main id="main">{children}</main>
+          <main id="main" className="pt-16 lg:pt-0">{children}</main>
           <SiteFooter />
           <WhatsAppFloatingButton />
           <HereAssistantWidget />

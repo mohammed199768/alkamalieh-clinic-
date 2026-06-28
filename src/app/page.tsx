@@ -14,7 +14,7 @@ export default function HomePage() {
   useEffect(() => {
     const evaluate = () => {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const desktop = window.matchMedia("(min-width: 768px)").matches;
+      const desktop = window.matchMedia("(min-width: 1024px)").matches;
       setPagerOn(desktop && !reduce);
     };
     evaluate();
@@ -30,12 +30,12 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="overflow-x-clip bg-[#f6f9fe]">
+    <div className="w-full max-w-full overflow-x-clip bg-[#f6f9fe]">
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       {pagerOn ? (
         <HomeSectionPager panels={panels} />
       ) : (
-        <div>
+        <div className="w-full max-w-full overflow-x-clip">
           {panels.map((p, i) => (
             <div key={i}>{p}</div>
           ))}

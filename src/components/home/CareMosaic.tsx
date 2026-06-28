@@ -28,9 +28,9 @@ export default function CareMosaic() {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="snap-section flex min-h-[calc(100svh-4rem)] w-full items-center py-16 sm:py-20 lg:py-24"
+      className="snap-section flex min-h-[calc(100svh-4rem)] w-full max-w-full items-center overflow-x-clip py-16 sm:py-20 lg:py-24"
     >
-      <div className="container-x w-full">
+      <div className="container-x w-full max-w-full">
       <div className="mb-8 max-w-2xl" style={getAnimStyle(0)}>
         <p className="eyebrow mb-3">{t("خدماتنا", "Our services")}</p>
         <h2 className="text-h2 font-extrabold tracking-tight text-navy-900">

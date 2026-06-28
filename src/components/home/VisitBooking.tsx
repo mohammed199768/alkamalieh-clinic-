@@ -23,9 +23,9 @@ export default function VisitBooking() {
   return (
     <section
       ref={containerRef}
-      className="snap-section flex min-h-[calc(100svh-4rem)] w-full flex-col justify-center gap-1.5 overflow-hidden px-3 pb-3 pt-1.5 md:gap-2 md:px-5 md:pb-5 md:pt-2"
+      className="snap-section flex min-h-[calc(100svh-4rem)] w-full max-w-full flex-col justify-center gap-1.5 overflow-x-clip px-3 pb-3 pt-1.5 md:gap-2 md:px-5 md:pb-5 md:pt-2 lg:overflow-hidden"
     >
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-1.5 md:grid-cols-2 md:gap-2">
+      <div className="grid min-h-0 w-full max-w-full flex-1 grid-cols-1 gap-1.5 md:grid-cols-2 md:gap-2">
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-1.5 md:gap-2">
           {/* heading card */}

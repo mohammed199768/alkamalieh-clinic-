@@ -21,10 +21,10 @@ export default function HeroEditorial() {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="snap-section relative w-full overflow-hidden bg-gradient-to-b from-[#eef5fb] to-white"
+      className="snap-section relative w-full max-w-full overflow-x-clip bg-gradient-to-b from-[#eef5fb] to-white"
     >
       <div className="pointer-events-none absolute inset-0 bg-grid opacity-60" />
-      <div className="container-x relative grid min-h-[calc(100svh-4rem)] items-center gap-8 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:py-16">
+      <div className="container-x relative grid min-h-[calc(100svh-4rem)] max-w-full items-center gap-8 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:py-16">
         {/* content */}
         <div className="order-2 lg:order-1">
           <span className="chip mb-5" style={getAnimStyle(0)}>

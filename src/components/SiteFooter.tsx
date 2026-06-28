@@ -49,16 +49,10 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
   ];
 
   return (
-    <footer className="relative w-full overflow-hidden bg-gradient-to-b from-white to-[#eef5fb] py-16">
+    <footer className="relative w-full max-w-full overflow-x-clip bg-gradient-to-b from-white to-[#eef5fb] py-12 sm:py-16">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-300/70 to-transparent" />
-      <div className="container-x flex flex-col items-center text-center">
-        {/* circular brand mark */}
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-50 ring-1 ring-brand-100">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-900">
-            <Icon name="heart-pulse" className="h-6 w-6 text-cyan-300" />
-          </span>
-        </div>
-        <div className="mt-4">
+      <div className="container-x flex max-w-full flex-col items-center text-center">
+        <div>
           <BrandMark subtitle className="justify-center" />
         </div>
         <p className="mt-4 max-w-md text-sm text-navy-500">
@@ -75,7 +69,7 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
         </nav>
 
         {/* social buttons */}
-        <div className="mt-8 flex items-center justify-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           {socials.map((s) =>
             s.enabled ? (
               <a
@@ -110,7 +104,7 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
               {t("تم تسجيل بريدك، شكرًا لاشتراكك.", "Your email is registered — thanks for subscribing.")}
             </p>
           ) : (
-            <div className="flex items-center gap-2 rounded-full border border-navy-100 bg-white p-1.5 shadow-soft">
+            <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-navy-100 bg-white p-1.5 shadow-soft sm:flex-row sm:items-center sm:rounded-full">
               <input
                 type="email"
                 required

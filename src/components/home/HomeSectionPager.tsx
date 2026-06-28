@@ -6,7 +6,7 @@ const WHEEL_THRESHOLD = 18;
 const SWIPE_THRESHOLD = 50;
 
 /**
- * Full-page section pager (homepage only, desktop/tablet).
+ * Full-page section pager (homepage only, lg desktop and above).
  * One wheel notch / swipe / arrow key advances exactly one full section.
  * Body scroll is locked while mounted; cleaned up on unmount.
  * Panels translate via CSS transform; section content animates in on its own
