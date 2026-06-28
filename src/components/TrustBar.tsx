@@ -5,10 +5,10 @@ import Icon from "./Icon";
 export default function TrustBar() {
   const { lang } = useLang();
   const items = [
-    { ar: "خدمة طوارئ 24 ساعة", en: "24/7 emergency", icon: "clock" },
+    { ar: "رعاية داخل العيادة 24 ساعة", en: "24-hour in-clinic care", icon: "clock" },
     { ar: "فريق يسمعك ويهتم", en: "A team that listens", icon: "heart-pulse" },
     { ar: "زيارات منزلية", en: "Home visits", icon: "home" },
-    { ar: "معتمدون لدى التأمين", en: "Insurance accepted", icon: "shield" },
+    { ar: "التحقق من التغطية التأمينية", en: "Coverage check", icon: "shield" },
   ];
   return (
     <div className="border-y border-white/60 bg-white/60 backdrop-blur">

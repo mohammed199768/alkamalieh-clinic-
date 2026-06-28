@@ -11,7 +11,7 @@ export default function JsonLd() {
     email: CLINIC.email,
     image: `${SITE_URL}/og.png`,
     description:
-      "Al Kamalia Medical Center: 24/7 emergency care, general medicine, chronic disease follow-up, home visits, lab tests and IV iron sessions in Amman.",
+      "Al Kamalia Medical Center: 24-hour in-clinic urgent care, general medicine, chronic disease follow-up, home visits, lab tests and IV iron sessions in Amman.",
     address: {
       "@type": "PostalAddress",
       streetAddress: CLINIC.address.en,
@@ -27,7 +27,7 @@ export default function JsonLd() {
       closes: "23:59",
     },
     availableService: [
-      "Emergency care","General medicine","Chronic disease follow-up",
+      "24-hour in-clinic urgent care","General medicine","Chronic disease follow-up",
       "Home visits","Lab tests","IV iron sessions","Medical consultations",
     ],
     sameAs: [CLINIC.facebook].filter(Boolean),

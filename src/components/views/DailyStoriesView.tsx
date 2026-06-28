@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
-import { telHref, whatsappHref } from "@/lib/clinic";
+import { whatsappHref } from "@/lib/clinic";
 import PageHeader from "@/components/PageHeader";
 import SectionShell from "@/components/SectionShell";
 import Reveal from "@/components/Reveal";
@@ -14,9 +14,8 @@ export default function DailyStoriesView() {
   const { lang, t } = useLang();
   const L = (b: { ar: string; en: string }) => (lang === "ar" ? b.ar : b.en);
   const imgs = [MEDIA.consultation, MEDIA.familyCare, MEDIA.childCare, MEDIA.seniorHome, MEDIA.labTesting, MEDIA.consultationRemote, MEDIA.consultation, MEDIA.familyCare];
-  const storyIcon = (ct: string) => (ct === "emergency" ? "ambulance" : ct === "contact" ? "headset" : "heart-pulse");
+  const storyIcon = (ct: string) => (ct === "contact" ? "headset" : "heart-pulse");
   const cta = (s: typeof stories[number]) => {
-    if (s.ctaType === "emergency") return { href: telHref, cls: "btn-emergency", icon: "phone", ext: true };
     if (s.ctaType === "contact") return { href: whatsappHref(L(s.title)), cls: "btn-whatsapp", icon: "whatsapp", ext: true };
     return { href: "/booking", cls: "btn-primary", icon: "arrow", ext: false };
   };

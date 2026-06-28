@@ -1,6 +1,6 @@
 "use client";
+import Link from "next/link";
 import { useLang } from "@/lib/i18n";
-import { telHref, CLINIC } from "@/lib/clinic";
 import Icon from "./Icon";
 
 export default function EmergencyCTA({
@@ -13,29 +13,28 @@ export default function EmergencyCTA({
   const { t } = useLang();
   if (variant === "banner") {
     return (
-      <div className={`card-emergency relative overflow-hidden p-1 ${className}`}>
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+      <div className={["card-elevated relative overflow-hidden p-1", className].filter(Boolean).join(" ")}>
         <div className="relative flex flex-col items-center gap-5 px-6 py-6 sm:flex-row sm:justify-between sm:px-8">
           <div className="flex items-center gap-4 text-center sm:text-start">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25">
-              <Icon name="ambulance" className="h-6 w-6 animate-pulseSoft" />
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
+              <Icon name="clock" className="h-6 w-6" />
             </span>
             <div>
-              <p className="text-lg font-extrabold">{t("طوارئ على مدار 24 ساعة", "Emergency care, 24/7")}</p>
-              <p className="text-sm text-white/80">{t("فريقنا جاهز لاستقبالك في أي وقت — اتصل الآن.", "Our team is ready any time — call now.")}</p>
+              <p className="text-lg font-extrabold text-navy-900">{t("رعاية داخل العيادة 24 ساعة", "24-hour in-clinic care")}</p>
+              <p className="text-sm text-navy-500">{t("معلومات عن استقبال الحالات العاجلة داخل المركز.", "Information about urgent case reception inside the clinic.")}</p>
             </div>
           </div>
-          <a href={telHref} className="btn bg-white px-6 py-3 text-rose-700 hover:bg-rose-50">
-            <Icon name="phone" className="h-4 w-4" /> {CLINIC.phone}
-          </a>
+          <Link href="/emergency" className="btn-primary px-6 py-3">
+            <Icon name="arrow" className="h-4 w-4 rtl:rotate-180" /> {t("التفاصيل", "Details")}
+          </Link>
         </div>
       </div>
     );
   }
   return (
-    <a href={telHref} className={`btn-emergency ${className}`}>
-      <Icon name="ambulance" className="h-4 w-4" />
-      {t("طوارئ 24 ساعة", "24/7 Emergency")}
-    </a>
+    <Link href="/emergency" className={["btn-primary", className].filter(Boolean).join(" ")}>
+      <Icon name="clock" className="h-4 w-4" />
+      {t("رعاية 24 ساعة", "24-hour care")}
+    </Link>
   );
 }

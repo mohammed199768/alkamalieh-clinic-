@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLang } from "@/lib/i18n";
-import { CLINIC, telHref, whatsappHref } from "@/lib/clinic";
+import { CLINIC, whatsappHref } from "@/lib/clinic";
 import BrandMark from "./BrandMark";
 import LanguageToggle from "./LanguageToggle";
 import Icon from "./Icon";
@@ -21,7 +21,7 @@ const MAIN: Item[] = [
 
 const SERVICES: Item[] = [
   { ar: "طب عام", en: "General medicine", href: "/services", icon: "stethoscope" },
-  { ar: "طوارئ 24 ساعة", en: "24/7 Emergency", href: "/emergency", icon: "ambulance" },
+  { ar: "رعاية داخل العيادة 24 ساعة", en: "24-hour in-clinic care", href: "/emergency", icon: "clock" },
   { ar: "زيارات منزلية", en: "Home visits", href: "/services#home-visits", icon: "home" },
   { ar: "فحوصات مخبرية", en: "Lab tests", href: "/services#labs", icon: "vial" },
   { ar: "جلسات الحديد بالوريد", en: "IV iron sessions", href: "/services#iv-iron", icon: "droplet" },
@@ -63,7 +63,6 @@ export default function SiteHeader() {
   const { lang, t } = useLang();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isKids = pathname?.startsWith("/kids") || pathname?.startsWith("/bedtime-stories");
   const L = (o: { ar: string; en: string }) => (lang === "ar" ? o.ar : o.en);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -102,14 +101,6 @@ export default function SiteHeader() {
 
         <div className="hidden items-center gap-2.5 xl:flex">
           <LanguageToggle />
-          {!isKids && (
-            <a href={telHref} className="btn-emergency px-3.5 py-2 text-xs">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
-                <Icon name="ambulance" className="h-3.5 w-3.5" />
-              </span>
-              {t("طوارئ", "Emergency")}
-            </a>
-          )}
           <Link href="/booking" className="btn-primary">
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
               <Icon name="calendar" className="h-3.5 w-3.5" />
@@ -328,7 +319,7 @@ function MobileMenu({
         </nav>
 
         <div
-          className={`mx-auto grid w-full max-w-3xl gap-2 border-t border-navy-100/70 pt-4 transition-all duration-300 min-[440px]:grid-cols-3 ${
+          className={`mx-auto grid w-full max-w-3xl gap-2 border-t border-navy-100/70 pt-4 transition-all duration-300 min-[440px]:grid-cols-2 ${
             open ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
           } motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`}
           style={{ transitionDelay: open ? `${groups.length * 45}ms` : "0ms" }}
@@ -336,9 +327,6 @@ function MobileMenu({
           <Link href="/booking" onClick={onClose} className="btn-primary w-full">
             <Icon name="calendar" className="h-4 w-4" /> {t("احجز الآن", "Book Now")}
           </Link>
-          <a href={telHref} className="btn-emergency w-full" onClick={onClose}>
-            <Icon name="ambulance" className="h-4 w-4" /> {t("طوارئ", "Emergency")}
-          </a>
           <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp w-full" onClick={onClose}>
             <Icon name="whatsapp" className="h-4 w-4" /> WhatsApp
           </a>

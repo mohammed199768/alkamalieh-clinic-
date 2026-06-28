@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import EmergencyView from "@/components/views/EmergencyView";
 
 export const metadata: Metadata = {
-  title: "طوارئ 24 ساعة | 24/7 Emergency",
-  description: "خدمة طوارئ على مدار الساعة في مركز الكمالية الطبي بعمّان. اتصل الآن.",
+  title: "رعاية داخل العيادة 24 ساعة | 24-hour in-clinic care",
+  description: "معلومات عن استقبال الحالات العاجلة داخل المركز.",
   alternates: { canonical: "/emergency" },
-  openGraph: { title: "طوارئ 24 ساعة | 24/7 Emergency", description: "خدمة طوارئ على مدار الساعة في مركز الكمالية الطبي بعمّان. اتصل الآن.", url: "/emergency" },
+  openGraph: { title: "رعاية داخل العيادة 24 ساعة | 24-hour in-clinic care", description: "معلومات عن استقبال الحالات العاجلة داخل المركز.", url: "/emergency" },
 };
 
 export default function Page() {

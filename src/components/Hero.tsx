@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/lib/i18n";
-import { CLINIC, whatsappHref, telHref } from "@/lib/clinic";
+import { CLINIC, whatsappHref } from "@/lib/clinic";
 import { MEDIA } from "@/data/media";
 import Icon from "./Icon";
 
@@ -24,10 +24,10 @@ export default function Hero() {
         };
 
   const trust = [
-    { icon: "ambulance", ar: "طوارئ 24 ساعة", en: "24/7 Emergency" },
+    { icon: "clock", ar: "رعاية داخل العيادة 24 ساعة", en: "24-hour in-clinic care" },
     { icon: "home", ar: "زيارات منزلية في عمّان", en: "Home visits in Amman" },
     { icon: "vial", ar: "فحوصات عبر مختبرات متعاقدة", en: "Contracted labs" },
-    { icon: "shield", ar: "معتمدون لدى شركات التأمين", en: "Insurance accepted" },
+    { icon: "shield", ar: "التحقق من التغطية التأمينية", en: "Coverage check" },
   ];
 
   return (
@@ -76,8 +76,8 @@ export default function Hero() {
 
           <motion.p {...fade(0.16)} className="js-hero-sub mt-6 max-w-xl text-lead text-navy-600">
             {t(
-              "رعاية طبية قريبة من يومك: طوارئ 24 ساعة، طب عام، متابعة مزمنة، وزيارات منزلية في عمّان.",
-              "Medical care close to your day: 24/7 emergency, general medicine, chronic follow-up, and home visits in Amman."
+              "نستقبل الحالات العاجلة داخل المركز على مدار 24 ساعة ونوجهك للخطوة المناسبة عند الوصول.",
+              "Medical care close to your day: general medicine, chronic follow-up, home visits in Amman, and 24-hour in-clinic urgent care."
             )}
           </motion.p>
 
@@ -89,10 +89,6 @@ export default function Hero() {
               {t("احجز الآن", "Book Now")}
               <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
             </Link>
-            <a href={telHref} className="btn-emergency">
-              <Icon name="ambulance" className="h-4 w-4" />
-              {t("طوارئ 24 ساعة", "24/7 Emergency")}
-            </a>
             <a href={whatsappHref("مرحباً، أرغب بالتواصل مع مركز الكمالية الطبي.")} target="_blank" rel="noopener noreferrer" className="btn-ghost">
               <Icon name="whatsapp" className="h-4 w-4 text-[#1faf54]" /> WhatsApp
             </a>

@@ -148,10 +148,10 @@
       "en": "At night the questions grow and the people to ask shrink. Finding someone to answer, calm you, and guide the right step is the difference between a night of worry and a night of safety."
     },
     "ctaLabel": {
-      "ar": "اتصل بنا الآن",
-      "en": "Call us now"
+      "ar": "تواصل معنا",
+      "en": "Contact us"
     },
-    "ctaType": "emergency"
+    "ctaType": "contact"
   },
   {
     "id": "s8",

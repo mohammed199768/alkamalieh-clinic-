@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
-import { CLINIC, telHref, whatsappHref } from "@/lib/clinic";
+import { CLINIC, whatsappHref } from "@/lib/clinic";
 import { HOME_MEDIA } from "@/data/homeMedia";
 import Icon from "@/components/Icon";
 import { useStaggeredReveal } from "./maskHooks";
@@ -12,10 +12,10 @@ export default function HeroEditorial() {
   const { containerRef, getAnimStyle, getImageStyle } = useStaggeredReveal(0.25);
 
   const trust = [
-    { icon: "ambulance", ar: "طوارئ 24 ساعة", en: "24/7 Emergency" },
+    { icon: "clock", ar: "رعاية داخل العيادة 24 ساعة", en: "24-hour in-clinic care" },
     { icon: "home", ar: "زيارات منزلية في عمّان", en: "Home visits in Amman" },
     { icon: "vial", ar: "مختبرات متعاقدة", en: "Contracted labs" },
-    { icon: "shield", ar: "معتمدون لدى شركات التأمين", en: "Insurance accepted" },
+    { icon: "shield", ar: "التحقق من التغطية التأمينية", en: "Coverage check" },
   ];
 
   return (
@@ -44,8 +44,8 @@ export default function HeroEditorial() {
             style={getAnimStyle(2)}
           >
             {t(
-              "رعاية طبية قريبة من يومك: طوارئ 24 ساعة، طب عام، متابعة مزمنة، زيارات منزلية في عمّان، وفحوصات عبر مختبرات متعاقدة.",
-              "Medical care close to your day: 24/7 emergency, general medicine, chronic follow-up, home visits in Amman, and lab testing through contracted laboratories."
+              "نستقبل الحالات العاجلة داخل المركز على مدار 24 ساعة ونوجهك للخطوة المناسبة عند الوصول.",
+              "Medical care close to your day: general medicine, chronic follow-up, home visits in Amman, lab testing through contracted laboratories, and 24-hour in-clinic urgent care."
             )}
           </p>
 
@@ -53,9 +53,6 @@ export default function HeroEditorial() {
             <Link href="/booking" className="btn-primary btn-lg shadow-glow">
               <Icon name="calendar" className="h-4 w-4" /> {t("احجز الآن", "Book Now")}
             </Link>
-            <a href={telHref} className="btn-emergency">
-              <Icon name="ambulance" className="h-4 w-4" /> {t("طوارئ 24 ساعة", "24/7 Emergency")}
-            </a>
             <a
               href={whatsappHref("مرحباً، أرغب بالتواصل مع مركز الكمالية الطبي.")}
               target="_blank"

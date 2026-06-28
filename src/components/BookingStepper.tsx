@@ -249,7 +249,7 @@ export default function BookingStepper() {
         {current === "condition" && (
           <Step title={t("وصف الحالة (اختياري)", "Condition description (optional)")}>
             <textarea value={form.condition} onChange={(e) => set("condition", e.target.value)} className={`${inputCls} min-h-28`} placeholder={t("اكتب الأعراض أو سبب الزيارة باختصار", "Briefly describe symptoms or reason")} />
-            <p className="mt-3 text-xs text-rose-600">{t("لا ترسل تفاصيل حالات الطوارئ المهددة للحياة عبر النموذج — اتصل مباشرة.", "Do not submit life-threatening emergency details via the form — call directly.")}</p>
+            <p className="mt-3 text-xs text-rose-600">{t("لا ترسل تفاصيل حالات الطوارئ المهددة للحياة عبر النموذج — اتصل بخدمات الطوارئ المحلية فوراً.", "Do not submit life-threatening emergency details via the form - call local emergency services immediately.")}</p>
           </Step>
         )}
 

@@ -1,34 +1,82 @@
 [
   {
-    "q": { "ar": "ما هي أوقات عمل المركز؟", "en": "What are the center's working hours?" },
-    "a": { "ar": "نستقبل الحالات الطارئة على مدار 24 ساعة. للحجوزات العامة يُفضّل التواصل معنا لتحديد الموعد المناسب.", "en": "We receive emergency cases 24/7. For general bookings, please contact us to arrange a suitable time." }
+    "q": {
+      "ar": "ما هي أوقات عمل المركز؟",
+      "en": "What are the center's working hours?"
+    },
+    "a": {
+      "ar": "نستقبل الحالات الطارئة على مدار 24 ساعة. للحجوزات العامة يُفضّل التواصل معنا لتحديد الموعد المناسب.",
+      "en": "We receive urgent cases inside the clinic 24 hours a day. For general bookings, please contact us to arrange a suitable time."
+    }
   },
   {
-    "q": { "ar": "هل تقدّمون زيارات منزلية؟", "en": "Do you offer home visits?" },
-    "a": { "ar": "نعم، نوفّر زيارات منزلية في مختلف مناطق عمّان لكبار السن والحالات التي يصعب فيها الحضور.", "en": "Yes, we offer home visits across Amman for seniors and cases where coming in is difficult." }
+    "q": {
+      "ar": "هل تقدّمون زيارات منزلية؟",
+      "en": "Do you offer home visits?"
+    },
+    "a": {
+      "ar": "نعم، نوفّر زيارات منزلية في مختلف مناطق عمّان لكبار السن والحالات التي يصعب فيها الحضور.",
+      "en": "Yes, we offer home visits across Amman for seniors and cases where coming in is difficult."
+    }
   },
   {
-    "q": { "ar": "هل المركز معتمد لدى شركات التأمين؟", "en": "Is the center accepted by insurance companies?" },
-    "a": { "ar": "المركز معتمد لدى عدد من شركات التأمين. تواصل معنا للتأكد من تغطية تأمينك تحديداً.", "en": "The center is accepted by several insurance companies. Contact us to confirm your specific coverage." }
+    "q": {
+      "ar": "كيف أتأكد من تغطية التأمين؟",
+      "en": "How can I check insurance coverage?"
+    },
+    "a": {
+      "ar": "تواصل معنا باسم شركة التأمين وسنساعدك في التأكد من التغطية المتاحة.",
+      "en": "Contact us with your insurance provider name and we will help confirm available coverage."
+    }
   },
   {
-    "q": { "ar": "كيف أحجز موعداً؟", "en": "How do I book an appointment?" },
-    "a": { "ar": "يمكنك الحجز عبر نموذج الحجز في الموقع، أو عبر واتساب، أو بالاتصال المباشر بالمركز.", "en": "You can book through the website booking form, via WhatsApp, or by calling the center directly." }
+    "q": {
+      "ar": "كيف أحجز موعداً؟",
+      "en": "How do I book an appointment?"
+    },
+    "a": {
+      "ar": "يمكنك الحجز عبر نموذج الحجز في الموقع، أو عبر واتساب، أو بالاتصال المباشر بالمركز.",
+      "en": "You can book through the website booking form, via WhatsApp, or by calling the center directly."
+    }
   },
   {
-    "q": { "ar": "هل تجرون الفحوصات المخبرية؟", "en": "Do you perform lab tests?" },
-    "a": { "ar": "نعم، نوفّر الفحوصات من خلال مختبرات متعاقدة موثوقة مع تفسير واضح للنتائج.", "en": "Yes, we provide tests through trusted contracted laboratories with a clear explanation of results." }
+    "q": {
+      "ar": "هل تجرون الفحوصات المخبرية؟",
+      "en": "Do you perform lab tests?"
+    },
+    "a": {
+      "ar": "نعم، نوفّر الفحوصات من خلال مختبرات متعاقدة موثوقة مع تفسير واضح للنتائج.",
+      "en": "Yes, we provide tests through trusted contracted laboratories with a clear explanation of results."
+    }
   },
   {
-    "q": { "ar": "هل تتابعون مرضى السكري والضغط؟", "en": "Do you follow up diabetes and blood pressure patients?" },
-    "a": { "ar": "نعم، لدينا خطة متابعة منتظمة للأمراض المزمنة لمساعدتك على البقاء مستقراً.", "en": "Yes, we have a regular follow-up plan for chronic conditions to help you stay stable." }
+    "q": {
+      "ar": "هل تتابعون مرضى السكري والضغط؟",
+      "en": "Do you follow up diabetes and blood pressure patients?"
+    },
+    "a": {
+      "ar": "نعم، لدينا خطة متابعة منتظمة للأمراض المزمنة لمساعدتك على البقاء مستقراً.",
+      "en": "Yes, we have a regular follow-up plan for chronic conditions to help you stay stable."
+    }
   },
   {
-    "q": { "ar": "هل يمكنني الحصول على استشارة عن بُعد؟", "en": "Can I get a remote consultation?" },
-    "a": { "ar": "نعم، نقدّم استشارات طبية عامة عبر واتساب أو الهاتف لتوجيهك للخطوة المناسبة.", "en": "Yes, we offer general medical consultations via WhatsApp or phone to guide your next step." }
+    "q": {
+      "ar": "هل يمكنني الحصول على استشارة عن بُعد؟",
+      "en": "Can I get a remote consultation?"
+    },
+    "a": {
+      "ar": "نعم، نقدّم استشارات طبية عامة عبر واتساب أو الهاتف لتوجيهك للخطوة المناسبة.",
+      "en": "Yes, we offer general medical consultations via WhatsApp or phone to guide your next step."
+    }
   },
   {
-    "q": { "ar": "ماذا أفعل في الحالات الطارئة الخطيرة؟", "en": "What should I do in a severe emergency?" },
-    "a": { "ar": "في الحالات الخطيرة المهددة للحياة اتصل بخدمات الطوارئ المحلية فوراً، ثم تواصل معنا.", "en": "In severe life-threatening cases, call local emergency services immediately, then contact us." }
+    "q": {
+      "ar": "ماذا أفعل في الحالات الطارئة الخطيرة؟",
+      "en": "What should I do in a severe emergency?"
+    },
+    "a": {
+      "ar": "في الحالات الخطيرة أو المهددة للحياة، اتصل بخدمات الطوارئ المحلية فوراً.",
+      "en": "In severe life-threatening cases, call local emergency services immediately."
+    }
   }
 ]

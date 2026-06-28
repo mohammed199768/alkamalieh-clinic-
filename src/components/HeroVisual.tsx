@@ -3,14 +3,14 @@ import { useLang } from "@/lib/i18n";
 import Icon from "./Icon";
 
 /* Premium spatial medical composition: central monitor card with ECG,
-   orbiting care nodes (emergency, home visit, lab, insurance). No emoji. */
+   orbiting care nodes (in-clinic care, home visit, lab, coverage). No emoji. */
 export default function HeroVisual({ className = "" }: { className?: string }) {
   const { lang } = useLang();
   const nodes = [
-    { icon: "ambulance", ar: "طوارئ", en: "Emergency", pos: "top-3 ltr:right-2 rtl:left-2", tone: "rose" },
+    { icon: "clock", ar: "رعاية 24 ساعة", en: "24-hour care", pos: "top-3 ltr:right-2 rtl:left-2", tone: "brand" },
     { icon: "home", ar: "زيارة منزلية", en: "Home visit", pos: "top-24 ltr:left-0 rtl:right-0", tone: "brand" },
     { icon: "vial", ar: "مختبرات", en: "Lab tests", pos: "bottom-20 ltr:right-0 rtl:left-0", tone: "cyan" },
-    { icon: "shield", ar: "تأمين معتمد", en: "Insurance", pos: "bottom-4 ltr:left-6 rtl:right-6", tone: "mint" },
+    { icon: "shield", ar: "التحقق من التغطية التأمينية", en: "Coverage check", pos: "bottom-4 ltr:left-6 rtl:right-6", tone: "mint" },
   ] as const;
   const tones: Record<string, string> = {
     rose: "text-rose-600 bg-rose-50 ring-rose-100",

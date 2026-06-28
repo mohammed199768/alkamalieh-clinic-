@@ -3,7 +3,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLang } from "@/lib/i18n";
-import { CLINIC, telHref, whatsappHref } from "@/lib/clinic";
+import { whatsappHref } from "@/lib/clinic";
 import { HOME_MEDIA } from "@/data/homeMedia";
 import Icon from "@/components/Icon";
 import { useStaggeredReveal } from "./maskHooks";
@@ -88,11 +88,6 @@ export default function VisitBooking() {
         <div className="relative min-h-[360px] overflow-hidden rounded-xl md:min-h-0 md:rounded-2xl" style={getAnimStyle(3)}>
           <Image src={HOME_MEDIA.reception} alt={t("مركز الكمالية الطبي والموقع", "Al Kamalia Medical Center and location")} fill sizes="50vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/55 via-transparent to-navy-950/10" />
-
-          {/* small controlled emergency CTA */}
-          <a href={telHref} className="absolute top-4 z-10 inline-flex items-center gap-2 rounded-full bg-rose-600/95 px-4 py-2 text-xs font-bold text-white backdrop-blur ltr:right-4 rtl:left-4">
-            <Icon name="ambulance" className="h-4 w-4" /> {CLINIC.phone}
-          </a>
 
           {/* overlay cards */}
           <div className="absolute inset-x-3 bottom-3 z-10 flex gap-1.5 md:inset-x-5 md:bottom-5 md:gap-2">

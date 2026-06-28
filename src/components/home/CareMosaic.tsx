@@ -38,7 +38,7 @@ export default function CareMosaic() {
         </h2>
         <p className="mt-3 text-lead text-navy-500">
           {t(
-            "من الطوارئ إلى المتابعة المزمنة، نرتب لك الخطوة الطبية الأقرب.",
+            "من الأسئلة العاجلة إلى المتابعة المزمنة، نرتب لك الخطوة الطبية الأقرب.",
             "From emergencies to chronic follow-up, we arrange your nearest medical step."
           )}
         </p>

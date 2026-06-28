@@ -46,7 +46,7 @@ export default function ContactView() {
                 <li className="flex items-center gap-3"><Icon name="phone" className="h-5 w-5 text-brand-500" /><a href={telHref}>{CLINIC.phone}</a></li>
                 <li className="flex items-center gap-3"><Icon name="mail" className="h-5 w-5 text-brand-500" /><a className="break-all" href={`mailto:${CLINIC.email}`}>{CLINIC.email}</a></li>
                 <li className="flex items-start gap-3"><Icon name="pin" className="mt-0.5 h-5 w-5 text-brand-500" /><span>{lang === "ar" ? CLINIC.address.ar : CLINIC.address.en}</span></li>
-                <li className="flex items-center gap-3"><Icon name="clock" className="h-5 w-5 text-brand-500" /><span>{t("طوارئ 24 ساعة", "24/7 Emergency")}</span></li>
+                <li className="flex items-center gap-3"><Icon name="clock" className="h-5 w-5 text-brand-500" /><span>{t("رعاية داخل العيادة 24 ساعة", "24-hour in-clinic care")}</span></li>
               </ul>
               <div className="mt-5 flex flex-wrap gap-2">
                 <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp text-sm"><Icon name="whatsapp" className="h-4 w-4" /> WhatsApp</a>
@@ -70,7 +70,7 @@ export default function ContactView() {
                 <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${input} min-h-32`} placeholder={t("رسالتك", "Your message")} />
                 {error && <p className="text-sm font-semibold text-rose-600">{error}</p>}
                 <button disabled={sending} className="btn-primary w-full">{sending ? t("جارٍ الإرسال…", "Sending…") : t("إرسال", "Send")}</button>
-                <p className="text-xs text-slate-400">{t("لا ترسل تفاصيل طوارئ مهددة للحياة عبر النموذج — اتصل مباشرة.", "Do not send life-threatening emergency details via the form — call directly.")}</p>
+                <p className="text-xs text-slate-400">{t("لا ترسل تفاصيل طوارئ مهددة للحياة عبر النموذج — اتصل بخدمات الطوارئ المحلية فوراً.", "Do not send life-threatening emergency details via the form - call local emergency services immediately.")}</p>
               </form>
             )}
           </div>
