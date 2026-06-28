@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLang } from "@/lib/i18n";
 import { CLINIC, telHref, whatsappHref } from "@/lib/clinic";
 import BrandMark from "./BrandMark";
@@ -10,6 +11,13 @@ import Icon from "./Icon";
 
 type Item = { ar: string; en: string; href: string; icon: string; external?: boolean };
 type Group = { ar: string; en: string; href?: string; items?: Item[] };
+
+const MAIN: Item[] = [
+  { ar: "الرئيسية", en: "Home", href: "/", icon: "home" },
+  { ar: "الخدمات", en: "Services", href: "/services", icon: "stethoscope" },
+  { ar: "احجز الآن", en: "Book Now", href: "/booking", icon: "calendar" },
+  { ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" },
+];
 
 const SERVICES: Item[] = [
   { ar: "طب عام", en: "General medicine", href: "/services", icon: "stethoscope" },
@@ -37,7 +45,6 @@ const KIDS: Item[] = [
 ];
 
 const CONTACT: Item[] = [
-  { ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" },
   { ar: "واتساب", en: "WhatsApp", href: whatsappHref(), icon: "whatsapp", external: true },
   { ar: "فيسبوك", en: "Facebook", href: CLINIC.facebook, icon: "facebook", external: true },
   { ar: "الموقع والاتجاهات", en: "Location & directions", href: CLINIC.maps, icon: "directions", external: true },
@@ -49,7 +56,7 @@ const GROUPS: Group[] = [
   { ar: "احجز الآن", en: "Booking", href: "/booking" },
   { ar: "المحتوى الطبي", en: "Medical Content", items: CONTENT },
   { ar: "العائلة والأطفال", en: "Family & Kids", items: KIDS },
-  { ar: "تواصل معنا", en: "Contact", items: CONTACT },
+  { ar: "تواصل معنا", en: "Contact", items: [{ ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" }, ...CONTACT] },
 ];
 
 export default function SiteHeader() {
@@ -68,8 +75,8 @@ export default function SiteHeader() {
     (g.href && pathname === g.href) || (g.items?.some((i) => !i.external && i.href.split("#")[0] === pathname) ?? false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[120] h-16 max-w-full border-b border-white/60 bg-white/80 backdrop-blur-2xl lg:sticky">
-      <div className="container-x relative z-[130] flex h-16 max-w-full items-center justify-between gap-2 sm:gap-4">
+    <header className="fixed inset-x-0 top-0 z-[500] h-16 max-w-full border-b border-white/60 bg-white/80 backdrop-blur-2xl lg:sticky">
+      <div className="container-x relative z-[501] flex h-16 max-w-full items-center justify-between gap-2 sm:gap-4">
         <Link href="/" aria-label="Kamalia Medical Center" onClick={closeMenu} className="min-w-0 shrink-0">
           <BrandMark />
         </Link>
@@ -122,12 +129,14 @@ export default function SiteHeader() {
             <Icon name="calendar" className="h-4 w-4" />
           </Link>
           <button
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label={menuOpen ? t("إغلاق", "Close") : t("القائمة", "Menu")}
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-label={t("القائمة", "Menu")}
             aria-expanded={menuOpen}
+            aria-haspopup="dialog"
             className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-navy-200/70 bg-white/80 text-navy-800 shadow-xs transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
           >
-            <Icon name={menuOpen ? "close" : "menu"} className="h-5 w-5" />
+            <Icon name="menu" className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -168,6 +177,7 @@ function NavDropdown({ group, active, L }: { group: Group; active: boolean; L: (
       }}
     >
       <button
+        type="button"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={panelId}
@@ -183,7 +193,7 @@ function NavDropdown({ group, active, L }: { group: Group; active: boolean; L: (
         <div
           id={panelId}
           role="menu"
-          className="absolute top-full z-[140] mt-2 w-72 origin-top animate-fadeIn rounded-2xl border border-white/50 bg-white/90 p-2 shadow-xl backdrop-blur-2xl ltr:left-0 rtl:right-0"
+          className="absolute top-full z-[600] mt-2 w-72 origin-top animate-fadeIn rounded-2xl border border-white/50 bg-white/90 p-2 shadow-xl backdrop-blur-2xl ltr:left-0 rtl:right-0"
         >
           {group.items!.map((it, i) =>
             it.external ? (
@@ -225,62 +235,81 @@ function MobileMenu({
   t: (ar: string, en: string) => string;
   pathname: string | null;
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
-    const prevBody = document.body.style.overflow;
-    const prevHtml = document.documentElement.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverscroll = document.body.style.overscrollBehavior;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.body.style.overscrollBehavior = "contain";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prevBody;
-      document.documentElement.style.overflow = prevHtml;
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overscrollBehavior = prevBodyOverscroll;
       window.removeEventListener("keydown", onKey);
     };
   }, [open, onClose]);
 
   const groups: { head: { ar: string; en: string }; items: Item[] }[] = [
-    {
-      head: { ar: "الرئيسية", en: "Home" },
-      items: [{ ar: "الرئيسية", en: "Home", href: "/", icon: "home" }],
-    },
-    { head: { ar: "الخدمات", en: "Services" }, items: SERVICES.slice(0, 5) },
-    {
-      head: { ar: "الحجز", en: "Booking" },
-      items: [
-        { ar: "احجز الآن", en: "Book now", href: "/booking", icon: "calendar" },
-        { ar: "طوارئ", en: "Emergency", href: "/emergency", icon: "ambulance" },
-      ],
-    },
-    { head: { ar: "المحتوى الطبي", en: "Medical Content" }, items: CONTENT.slice(0, 4) },
-    { head: { ar: "العائلة والأطفال", en: "Family & Kids" }, items: [KIDS[0], KIDS[4]] },
-    { head: { ar: "التواصل", en: "Contact" }, items: CONTACT },
+    { head: { ar: "الرئيسية", en: "Main" }, items: MAIN },
+    { head: { ar: "الخدمات", en: "Services" }, items: SERVICES },
+    { head: { ar: "المحتوى الطبي", en: "Medical Content" }, items: CONTENT },
+    { head: { ar: "العائلة والأطفال", en: "Family & Kids" }, items: KIDS },
   ];
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
-      className={`fixed inset-0 z-[100] max-w-full overflow-hidden bg-white/85 backdrop-blur-2xl transition-opacity duration-300 lg:hidden ${
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("القائمة", "Menu")}
+      className={`fixed inset-0 z-[999] max-w-full overflow-hidden bg-[#f4f8ff]/90 text-navy-900 backdrop-blur-2xl transition-opacity duration-300 lg:hidden ${
         open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-      }`}
-      aria-hidden={!open}
+      } motion-reduce:transition-none`}
       onClick={onClose}
       onWheel={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
     >
-      <nav
-        aria-label={t("القائمة", "Menu")}
-        className="h-dvh max-w-full overflow-y-auto overscroll-contain px-4 pb-8 pt-24 sm:px-8"
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(52,112,228,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(54,183,210,0.18),transparent_36%)]" />
+      <div
+        className={`relative z-[1000] flex h-dvh max-w-full flex-col overflow-y-auto overscroll-contain px-4 pb-6 pt-4 transition-transform duration-300 sm:px-8 ${
+          open ? "translate-y-0" : "translate-y-5"
+        } motion-reduce:translate-y-0 motion-reduce:transition-none`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mx-auto grid w-full max-w-2xl gap-3">
+        <div className="flex h-16 shrink-0 items-center justify-between gap-4">
+          <BrandMark />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("إغلاق", "Close")}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-navy-200/70 bg-white/80 text-navy-800 shadow-soft transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+          >
+            <Icon name="close" className="h-5 w-5" />
+          </button>
+        </div>
+
+        <nav aria-label={t("القائمة", "Menu")} className="mx-auto grid w-full max-w-3xl flex-1 content-start gap-3 py-4">
           {groups.map((g, gi) => (
             <section
               key={gi}
-              className={`rounded-2xl border border-white/70 bg-white/[0.72] p-3 text-start shadow-soft backdrop-blur-xl transition-all duration-300 ${
-                open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-              }`}
-              style={{ transitionDelay: open ? `${gi * 38}ms` : "0ms" }}
+              className={`rounded-3xl border border-white/70 bg-white/75 p-3 text-start shadow-soft backdrop-blur-xl transition-all duration-300 ${
+                open ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
+              } motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`}
+              style={{ transitionDelay: open ? `${gi * 45}ms` : "0ms" }}
             >
               <p className="px-2 pb-2 text-xs font-bold uppercase tracking-[0.14em] text-brand-600">{L(g.head)}</p>
               <div className="grid gap-1 sm:grid-cols-2">
@@ -296,23 +325,27 @@ function MobileMenu({
               </div>
             </section>
           ))}
+        </nav>
 
-          <div
-            className={`grid gap-2 pt-1 transition-all duration-300 min-[420px]:grid-cols-2 ${
-              open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-            }`}
-            style={{ transitionDelay: open ? `${groups.length * 38}ms` : "0ms" }}
-          >
-            <a href={telHref} className="btn-emergency w-full" onClick={onClose}>
-              <Icon name="ambulance" className="h-4 w-4" /> {t("طوارئ", "Emergency")}
-            </a>
-            <Link href="/booking" onClick={onClose} className="btn-primary w-full">
-              <Icon name="calendar" className="h-4 w-4" /> {t("احجز الآن", "Book Now")}
-            </Link>
-          </div>
+        <div
+          className={`mx-auto grid w-full max-w-3xl gap-2 border-t border-navy-100/70 pt-4 transition-all duration-300 min-[440px]:grid-cols-3 ${
+            open ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
+          } motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`}
+          style={{ transitionDelay: open ? `${groups.length * 45}ms` : "0ms" }}
+        >
+          <Link href="/booking" onClick={onClose} className="btn-primary w-full">
+            <Icon name="calendar" className="h-4 w-4" /> {t("احجز الآن", "Book Now")}
+          </Link>
+          <a href={telHref} className="btn-emergency w-full" onClick={onClose}>
+            <Icon name="ambulance" className="h-4 w-4" /> {t("طوارئ", "Emergency")}
+          </a>
+          <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="btn-whatsapp w-full" onClick={onClose}>
+            <Icon name="whatsapp" className="h-4 w-4" /> WhatsApp
+          </a>
         </div>
-      </nav>
-    </div>
+      </div>
+    </div>,
+    document.body
   );
 }
 
@@ -327,13 +360,13 @@ function MobileMenuItem({
   onClose: () => void;
   active: boolean;
 }) {
-  const className = `flex min-h-12 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition ${
+  const className = `flex min-h-12 items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
     active ? "bg-brand-50 text-brand-700 ring-1 ring-brand-100" : "text-navy-800 hover:bg-brand-50 hover:text-brand-700"
   }`;
   const content = (
     <>
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
-        <Icon name={item.icon} className="h-4.5 w-4.5" />
+        <Icon name={item.icon} className="h-4 w-4" />
       </span>
       <span>{L(item)}</span>
     </>
