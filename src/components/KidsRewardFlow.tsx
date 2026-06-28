@@ -14,22 +14,33 @@ export default function KidsRewardFlow({
   score?: string;
   onReset?: () => void;
 }) {
-  const { lang, t } = useLang();
+  const { t } = useLang();
   const [name, setName] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const confirm = async () => {
-    setConfirmed(true);
-    await fetch(FORMSPREE.kids, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        childName: name,
-        gameName: gameName.en,
-        score: score ?? "",
-        date: new Date().toISOString().slice(0, 10),
-      }),
-    }).catch(() => null);
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch(FORMSPREE.kids, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          childName: name,
+          gameName: gameName.en,
+          score: score ?? "",
+          date: new Date().toISOString().slice(0, 10),
+        }),
+      });
+      if (!res.ok) throw new Error("Kids reward submission failed");
+      setConfirmed(true);
+    } catch {
+      setError(t("تعذّر إرسال بيانات الفائز. حاول مرة أخرى.", "Could not submit the winner details. Please try again."));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -41,8 +52,9 @@ export default function KidsRewardFlow({
       {!confirmed ? (
         <div className="mt-6 space-y-3">
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("اسم صغيرنا الذكي", "Smart little one's name")} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-center text-lg font-bold outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100" />
-          <button onClick={confirm} disabled={!name.trim()} className="btn-primary w-full disabled:opacity-40">
-            <Icon name="star" className="h-5 w-5" /> {t("احصل على البطاقة", "Get my card")}
+          {error && <p className="text-sm font-semibold text-rose-600">{error}</p>}
+          <button onClick={confirm} disabled={!name.trim() || submitting} className="btn-primary w-full disabled:opacity-40">
+            <Icon name="star" className="h-5 w-5" /> {submitting ? t("جارٍ الإرسال…", "Sending…") : t("احصل على البطاقة", "Get my card")}
           </button>
         </div>
       ) : (

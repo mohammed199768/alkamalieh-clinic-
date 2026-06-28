@@ -11,17 +11,26 @@ export default function ContactView() {
   const { lang, t } = useLang();
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await fetch(FORMSPREE.contact, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ ...form, lang }),
-    }).catch(() => null);
-    setSending(false); setSent(true);
+    setError("");
+    try {
+      const res = await fetch(FORMSPREE.contact, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...form, lang }),
+      });
+      if (!res.ok) throw new Error("Contact submission failed");
+      setSent(true);
+    } catch {
+      setError(t("تعذّر إرسال الرسالة. حاول مرة أخرى أو تواصل معنا عبر واتساب.", "Could not send the message. Please try again or contact us on WhatsApp."));
+    } finally {
+      setSending(false);
+    }
   };
   const input = "w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100";
 
@@ -59,6 +68,7 @@ export default function ContactView() {
                 <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={input} placeholder={t("الاسم", "Name")} />
                 <input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={input} placeholder={t("رقم الهاتف", "Phone")} inputMode="tel" />
                 <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${input} min-h-32`} placeholder={t("رسالتك", "Your message")} />
+                {error && <p className="text-sm font-semibold text-rose-600">{error}</p>}
                 <button disabled={sending} className="btn-primary w-full">{sending ? t("جارٍ الإرسال…", "Sending…") : t("إرسال", "Send")}</button>
                 <p className="text-xs text-slate-400">{t("لا ترسل تفاصيل طوارئ مهددة للحياة عبر النموذج — اتصل مباشرة.", "Do not send life-threatening emergency details via the form — call directly.")}</p>
               </form>

@@ -12,6 +12,7 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
   const pathname = usePathname();
   const [email, setEmail] = useState("");
   const [sub, setSub] = useState<"idle" | "sending" | "done">("idle");
+  const [subError, setSubError] = useState("");
 
   // On the homepage the footer is rendered by the section pager (force); hide the global one.
   if (pathname === "/" && !force) return null;
@@ -32,13 +33,20 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
     e.preventDefault();
     if (!email) return;
     setSub("sending");
-    await fetch(FORMSPREE.contact, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ type: "newsletter", email, lang }),
-    }).catch(() => null);
-    setSub("done");
-    setEmail("");
+    setSubError("");
+    try {
+      const res = await fetch(FORMSPREE.contact, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ type: "newsletter", email, lang }),
+      });
+      if (!res.ok) throw new Error("Newsletter submission failed");
+      setSub("done");
+      setEmail("");
+    } catch {
+      setSub("idle");
+      setSubError(t("تعذّر تسجيل البريد. حاول مرة أخرى.", "Could not register your email. Please try again."));
+    }
   };
 
   const socials = [
@@ -120,6 +128,7 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
               </button>
             </div>
           )}
+          {subError && <p className="mt-2 text-sm font-semibold text-rose-600">{subError}</p>}
         </form>
 
         {/* contact line */}

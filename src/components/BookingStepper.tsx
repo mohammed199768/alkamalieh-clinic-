@@ -93,13 +93,16 @@ export default function BookingStepper() {
       service: serviceLabel(form.service), date: form.date, time: form.time,
     };
     try {
-      await fetch(FORMSPREE.booking, {
+      const res = await fetch(FORMSPREE.booking, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ bookingId, ...form, serviceLabel: serviceLabel(form.service), lang }),
-      }).catch(() => null);
-    } finally {
+      });
+      if (!res.ok) throw new Error("Booking submission failed");
       setDone(summary);
+    } catch {
+      setError(t("تعذّر إرسال طلب الحجز. حاول مرة أخرى أو تواصل معنا عبر واتساب.", "Could not send the booking request. Please try again or contact us on WhatsApp."));
+    } finally {
       setSubmitting(false);
     }
   };
