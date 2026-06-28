@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useLang } from "@/lib/i18n";
 import { FORMSPREE, whatsappHref } from "@/lib/clinic";
 import services from "@/data/services.json";
@@ -8,6 +8,15 @@ import DisclaimerNote from "./DisclaimerNote";
 import Icon from "./Icon";
 
 type Bi = { ar: string; en: string };
+
+const DATE_LOCALE = { ar: "ar-JO", en: "en-US" } as const;
+const WEEKDAYS = {
+  ar: ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"],
+  en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+} as const;
+
+// Booking UI slots only; adjust these later if the clinic wants a different booking window.
+const TIME_SLOT_CONFIG = { start: "09:00", end: "22:00", stepMinutes: 30 } as const;
 
 type Form = {
   location: "" | "clinic" | "home";
@@ -218,12 +227,32 @@ export default function BookingStepper() {
 
         {current === "datetime" && (
           <Step title={t("التاريخ والوقت المفضّل", "Preferred date and time")}>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 lg:hidden">
               <Field label={t("التاريخ", "Date")}>
                 <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} className={inputCls} />
               </Field>
               <Field label={t("الوقت", "Time")}>
                 <input type="time" value={form.time} onChange={(e) => set("time", e.target.value)} className={inputCls} />
+              </Field>
+            </div>
+            <div className="hidden gap-3 lg:grid lg:grid-cols-2">
+              <Field label={t("التاريخ", "Date")}>
+                <DesktopDatePicker
+                  value={form.date}
+                  onChange={(value) => set("date", value)}
+                  lang={lang}
+                  label={t("التاريخ", "Date")}
+                  placeholder={t("اختر التاريخ", "Select date")}
+                />
+              </Field>
+              <Field label={t("الوقت", "Time")}>
+                <DesktopTimePicker
+                  value={form.time}
+                  onChange={(value) => set("time", value)}
+                  lang={lang}
+                  label={t("الوقت", "Time")}
+                  placeholder={t("اختر الوقت", "Select time")}
+                />
               </Field>
             </div>
           </Step>
@@ -290,6 +319,289 @@ export default function BookingStepper() {
 }
 
 const inputCls = "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100";
+const pickerTriggerCls = "flex h-[52px] w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/85 px-4 text-start text-sm shadow-sm outline-none transition hover:border-brand-300 hover:bg-white focus-visible:border-brand-400 focus-visible:ring-2 focus-visible:ring-brand-100";
+
+function DesktopDatePicker({
+  value,
+  onChange,
+  lang,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  lang: string;
+  label: string;
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const today = useMemo(() => startOfDay(new Date()), []);
+  const selected = value ? parseDateValue(value) : null;
+  const [viewDate, setViewDate] = useState(() => selected ?? today);
+  const locale = lang === "ar" ? DATE_LOCALE.ar : DATE_LOCALE.en;
+  const weekdays = lang === "ar" ? WEEKDAYS.ar : WEEKDAYS.en;
+  const days = useMemo(() => calendarDays(viewDate), [viewDate]);
+
+  useEffect(() => {
+    if (value) setViewDate(parseDateValue(value));
+  }, [value]);
+
+  useClosePopover(open, rootRef, () => setOpen(false));
+
+  const monthLabel = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(viewDate);
+  const display = selected ? formatDateDisplay(value, lang) : "";
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        className={pickerTriggerCls}
+        aria-label={label}
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+            <Icon name="calendar" className="h-4 w-4" />
+          </span>
+          <span className={`truncate font-semibold ${display ? "text-ink" : "text-slate-400"}`}>{display || placeholder}</span>
+        </span>
+        <Icon name="chevron" className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${open ? "-rotate-90" : "rotate-90"}`} />
+      </button>
+
+      {open && (
+        <div id={id} role="dialog" aria-label={label} className="absolute left-0 right-0 top-full z-50 mt-2 rounded-3xl border border-white/70 bg-white/95 p-4 shadow-xl ring-1 ring-slate-100 backdrop-blur-xl">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => setViewDate((d) => addMonths(d, -1))}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-100"
+              aria-label={lang === "ar" ? "الشهر السابق" : "Previous month"}
+            >
+              <Icon name="chevron" className="h-4 w-4 rotate-180 rtl:rotate-0" />
+            </button>
+            <p className="min-w-0 flex-1 truncate text-center text-sm font-extrabold text-ink">{monthLabel}</p>
+            <button
+              type="button"
+              onClick={() => setViewDate((d) => addMonths(d, 1))}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-100"
+              aria-label={lang === "ar" ? "الشهر التالي" : "Next month"}
+            >
+              <Icon name="chevron" className="h-4 w-4 rtl:rotate-180" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-slate-400">
+            {weekdays.map((day) => (
+              <span key={day} className="py-1">{day}</span>
+            ))}
+          </div>
+          <div className="mt-1 grid grid-cols-7 gap-1">
+            {days.map((day, index) => {
+              if (!day) return <span key={`empty-${index}`} className="h-10" aria-hidden="true" />;
+              const dayValue = toDateValue(day);
+              const isPast = day < today;
+              const isToday = sameDate(day, today);
+              const isSelected = value === dayValue;
+              return (
+                <button
+                  key={dayValue}
+                  type="button"
+                  disabled={isPast}
+                  aria-label={formatDateDisplay(dayValue, lang)}
+                  aria-pressed={isSelected}
+                  onClick={() => {
+                    onChange(dayValue);
+                    setOpen(false);
+                  }}
+                  className={`flex h-10 items-center justify-center rounded-xl text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-100 ${
+                    isSelected
+                      ? "bg-brand-600 text-white shadow-glow"
+                      : isPast
+                        ? "cursor-not-allowed text-slate-300"
+                        : isToday
+                          ? "bg-brand-50 text-brand-700 ring-1 ring-brand-100 hover:bg-brand-100"
+                          : "text-slate-700 hover:bg-brand-50 hover:text-brand-700"
+                  }`}
+                >
+                  {new Intl.DateTimeFormat(locale, { day: "numeric" }).format(day)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DesktopTimePicker({
+  value,
+  onChange,
+  lang,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  lang: string;
+  label: string;
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const slots = useMemo(() => buildTimeSlots(TIME_SLOT_CONFIG), []);
+  const display = value ? formatTimeDisplay(value, lang) : "";
+
+  useClosePopover(open, rootRef, () => setOpen(false));
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        className={pickerTriggerCls}
+        aria-label={label}
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+            <Icon name="clock" className="h-4 w-4" />
+          </span>
+          <span className={`truncate font-semibold ${display ? "text-ink" : "text-slate-400"}`}>{display || placeholder}</span>
+        </span>
+        <Icon name="chevron" className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${open ? "-rotate-90" : "rotate-90"}`} />
+      </button>
+
+      {open && (
+        <div id={id} role="dialog" aria-label={label} className="absolute left-0 right-0 top-full z-50 mt-2 rounded-3xl border border-white/70 bg-white/95 p-3 shadow-xl ring-1 ring-slate-100 backdrop-blur-xl">
+          <div className="grid max-h-72 grid-cols-2 gap-2 overflow-y-auto pr-1">
+            {slots.map((slot) => {
+              const selected = value === slot;
+              return (
+                <button
+                  key={slot}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    onChange(slot);
+                    setOpen(false);
+                  }}
+                  className={`min-h-10 rounded-full border px-3 py-2 text-sm font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-100 ${
+                    selected
+                      ? "border-brand-600 bg-brand-600 text-white shadow-glow"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+                  }`}
+                >
+                  {formatTimeDisplay(slot, lang)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function useClosePopover(open: boolean, ref: React.RefObject<HTMLElement>, onClose: () => void) {
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: MouseEvent | TouchEvent) => {
+      if (!ref.current?.contains(event.target as Node)) onClose();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose, open, ref]);
+}
+
+function calendarDays(viewDate: Date) {
+  const first = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+  const total = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
+  const days: Array<Date | null> = Array.from({ length: first.getDay() }, () => null);
+  for (let day = 1; day <= total; day += 1) {
+    days.push(new Date(viewDate.getFullYear(), viewDate.getMonth(), day));
+  }
+  return days;
+}
+
+function addMonths(date: Date, months: number) {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+}
+
+function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function sameDate(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function toDateValue(date: Date) {
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+}
+
+function parseDateValue(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatDateDisplay(value: string, lang: string) {
+  const date = parseDateValue(value);
+  return new Intl.DateTimeFormat(lang === "ar" ? DATE_LOCALE.ar : DATE_LOCALE.en, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
+function buildTimeSlots(config: typeof TIME_SLOT_CONFIG) {
+  const start = timeToMinutes(config.start);
+  const end = timeToMinutes(config.end);
+  const slots: string[] = [];
+  for (let minutes = start; minutes <= end; minutes += config.stepMinutes) {
+    slots.push(minutesToTime(minutes));
+  }
+  return slots;
+}
+
+function formatTimeDisplay(value: string, lang: string) {
+  const [hour, minute] = value.split(":").map(Number);
+  return new Intl.DateTimeFormat(lang === "ar" ? DATE_LOCALE.ar : DATE_LOCALE.en, {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(2026, 0, 1, hour, minute));
+}
+
+function timeToMinutes(value: string) {
+  const [hour, minute] = value.split(":").map(Number);
+  return hour * 60 + minute;
+}
+
+function minutesToTime(total: number) {
+  const hour = Math.floor(total / 60);
+  const minute = total % 60;
+  return `${pad2(hour)}:${pad2(minute)}`;
+}
+
+function pad2(value: number) {
+  return value.toString().padStart(2, "0");
+}
 
 function Step({ title, children }: { title: string; children: React.ReactNode }) {
   return (
