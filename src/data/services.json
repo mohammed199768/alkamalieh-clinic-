@@ -1,0 +1,102 @@
+[
+  {
+    "id": "emergency",
+    "icon": "siren",
+    "title": { "ar": "طوارئ 24 ساعة", "en": "24/7 Emergency Care" },
+    "short": { "ar": "رعاية عاجلة في أي وقت من اليوم.", "en": "Urgent care any time, day or night." },
+    "desc": {
+      "ar": "فريقنا جاهز على مدار الساعة لاستقبال الحالات العاجلة وتقديم العناية الأولية الفورية والاطمئنان عليك.",
+      "en": "Our team is ready around the clock to receive urgent cases, provide immediate first care, and reassure you."
+    }
+  },
+  {
+    "id": "general-medicine",
+    "icon": "stethoscope",
+    "title": { "ar": "الطب العام", "en": "General Medicine" },
+    "short": { "ar": "تشخيص وعلاج للأعراض اليومية والمتابعة.", "en": "Diagnosis and treatment for everyday symptoms." },
+    "desc": {
+      "ar": "كشف وتشخيص شامل للأعراض الشائعة مع خطة علاج واضحة ومتابعة قريبة لحالتك.",
+      "en": "Comprehensive examination for common symptoms with a clear treatment plan and close follow-up."
+    }
+  },
+  {
+    "id": "children-care",
+    "icon": "baby",
+    "title": { "ar": "رعاية الأطفال", "en": "Children Care" },
+    "short": { "ar": "عناية لطيفة بصغارك ضمن الطب العام.", "en": "Gentle care for your little ones." },
+    "desc": {
+      "ar": "متابعة صحة الأطفال ضمن الطب العام، بأسلوب هادئ يطمئن الطفل والأهل معاً.",
+      "en": "Caring for children's health within general medicine, with a calm approach that reassures child and parents."
+    }
+  },
+  {
+    "id": "chronic",
+    "icon": "heart-pulse",
+    "title": { "ar": "متابعة الأمراض المزمنة", "en": "Chronic Disease Follow-up" },
+    "short": { "ar": "متابعة السكري والضغط بانتظام.", "en": "Regular diabetes and blood pressure follow-up." },
+    "desc": {
+      "ar": "خطة متابعة منتظمة للسكري والضغط والأمراض المزمنة لمساعدتك على البقاء مستقراً وآمناً.",
+      "en": "A regular follow-up plan for diabetes, blood pressure and chronic conditions to keep you stable and safe."
+    }
+  },
+  {
+    "id": "home-visits",
+    "icon": "home",
+    "title": { "ar": "زيارات منزلية في عمّان", "en": "Home Visits across Amman" },
+    "short": { "ar": "نأتي إليك حيث تشعر بالراحة.", "en": "We come to you where you feel comfortable." },
+    "desc": {
+      "ar": "خدمة الزيارات المنزلية لكبار السن والحالات التي يصعب فيها الحضور للمركز، في مختلف مناطق عمّان.",
+      "en": "Home visit service for seniors and cases where coming to the center is difficult, across Amman."
+    }
+  },
+  {
+    "id": "lab",
+    "icon": "flask",
+    "title": { "ar": "فحوصات مخبرية", "en": "Lab Tests" },
+    "short": { "ar": "تحاليل عبر مختبرات متعاقدة.", "en": "Tests through contracted laboratories." },
+    "desc": {
+      "ar": "نوفّر الفحوصات المخبرية من خلال مختبرات متعاقدة موثوقة، مع تفسير واضح للنتائج.",
+      "en": "We provide lab tests through trusted contracted laboratories, with a clear explanation of results."
+    }
+  },
+  {
+    "id": "iv-iron",
+    "icon": "droplet",
+    "title": { "ar": "جلسات الحديد الوريدي", "en": "IV Iron Sessions" },
+    "short": { "ar": "علاج نقص الحديد تحت إشراف طبي.", "en": "Iron deficiency treatment under supervision." },
+    "desc": {
+      "ar": "جلسات حديد وريدي تُجرى تحت إشراف طبي دقيق لعلاج نقص الحديد والإرهاق المرتبط به.",
+      "en": "IV iron sessions performed under careful medical supervision to treat iron deficiency and related fatigue."
+    }
+  },
+  {
+    "id": "minor-surgery",
+    "icon": "scissors",
+    "title": { "ar": "العمليات الصغرى", "en": "Minor Surgeries" },
+    "short": { "ar": "إجراءات بسيطة بعناية وأمان.", "en": "Simple procedures with care and safety." },
+    "desc": {
+      "ar": "نقدّم بعض العمليات الصغرى ضمن بيئة آمنة. اسأل المركز عن التفاصيل المتاحة عند الحاجة.",
+      "en": "We offer selected minor surgeries in a safe setting. Ask the center for available details when needed."
+    }
+  },
+  {
+    "id": "consultation",
+    "icon": "message",
+    "title": { "ar": "استشارات طبية", "en": "Medical Consultations" },
+    "short": { "ar": "عبر واتساب أو اتصال هاتفي.", "en": "Via WhatsApp or phone call." },
+    "desc": {
+      "ar": "استشارات طبية عامة عبر واتساب أو الهاتف لتوجيهك للخطوة المناسبة بسرعة.",
+      "en": "General medical consultations via WhatsApp or phone to quickly guide you to the right next step."
+    }
+  },
+  {
+    "id": "insurance",
+    "icon": "shield",
+    "title": { "ar": "معتمدون لدى شركات التأمين", "en": "Insurance Accepted" },
+    "short": { "ar": "نتعامل مع شركات تأمين معتمدة.", "en": "We work with approved insurance companies." },
+    "desc": {
+      "ar": "المركز معتمد لدى عدد من شركات التأمين. تواصل معنا للتأكد من تغطية تأمينك.",
+      "en": "The center is accepted by a number of insurance companies. Contact us to confirm your coverage."
+    }
+  }
+]

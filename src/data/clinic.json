@@ -1,0 +1,22 @@
+{
+  "name": { "ar": "مركز الكمالية الطبي", "en": "Al Kamalia Medical Center" },
+  "tagline": {
+    "ar": "حين تحتاج من يسمعك ويعتني بك، نحن هنا",
+    "en": "When you need someone to listen and care, we are here."
+  },
+  "phone": "0796119707",
+  "phoneIntl": "962796119707",
+  "whatsapp": "962796119707",
+  "email": "al.kamaliaMedicalcenter@gmail.com",
+  "emergency": { "ar": "طوارئ 24 ساعة", "en": "24/7 Emergency" },
+  "address": {
+    "ar": "الكمالية، باتجاه السلط، شارع الأميرة راية، أول مجمع على اليمين",
+    "en": "Al Kamalia, toward Al Salt, Princess Raya Street, first complex on the right"
+  },
+  "maps": "https://maps.app.goo.gl/Qo7DVZCUdWBMxrka9",
+  "mapsEmbed": "https://www.google.com/maps?q=Al+Kamalia+Princess+Raya+Street+Amman&output=embed",
+  "facebook": "https://www.facebook.com/people/%D9%85%D8%B1%D9%83%D8%B2-%D9%88%D9%85%D8%AE%D8%AA%D8%A8%D8%B1%D8%A7%D8%AA-%D8%A7%D9%84%D9%83%D9%85%D8%A7%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%B7%D8%A8%D9%8A/61555879271970/?sk=about",
+  "instagram": "",
+  "city": { "ar": "عمّان", "en": "Amman" },
+  "country": { "ar": "الأردن", "en": "Jordan" }
+}

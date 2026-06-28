@@ -1,0 +1,153 @@
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useLang } from "@/lib/i18n";
+import { CLINIC, FORMSPREE, whatsappHref } from "@/lib/clinic";
+import BrandMark from "./BrandMark";
+import Icon from "./Icon";
+
+export default function SiteFooter({ force = false }: { force?: boolean }) {
+  const { lang, t } = useLang();
+  const pathname = usePathname();
+  const [email, setEmail] = useState("");
+  const [sub, setSub] = useState<"idle" | "sending" | "done">("idle");
+
+  // On the homepage the footer is rendered by the section pager (force); hide the global one.
+  if (pathname === "/" && !force) return null;
+
+  const links = [
+    { ar: "الرئيسية", en: "Home", href: "/" },
+    { ar: "الخدمات", en: "Services", href: "/services" },
+    { ar: "احجز الآن", en: "Booking", href: "/booking" },
+    { ar: "صحتك في دقيقة", en: "Medical Minute", href: "/medical-minute" },
+    { ar: "صغيرنا الذكي", en: "Kids", href: "/kids" },
+    { ar: "حكايات المساء", en: "Evening Stories", href: "/bedtime-stories" },
+    { ar: "تواصل معنا", en: "Contact", href: "/contact" },
+    { ar: "الأسئلة الشائعة", en: "FAQ", href: "/faq" },
+    { ar: "الخصوصية", en: "Privacy", href: "/privacy" },
+  ];
+
+  const onSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setSub("sending");
+    await fetch(FORMSPREE.contact, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ type: "newsletter", email, lang }),
+    }).catch(() => null);
+    setSub("done");
+    setEmail("");
+  };
+
+  const socials = [
+    { name: "facebook", href: CLINIC.facebook, label: "Facebook", enabled: !!CLINIC.facebook },
+    { name: "instagram", href: CLINIC.instagram, label: "Instagram", enabled: !!CLINIC.instagram },
+    { name: "whatsapp", href: whatsappHref(), label: "WhatsApp", enabled: true },
+    { name: "directions", href: CLINIC.maps, label: t("الاتجاهات", "Directions"), enabled: !!CLINIC.maps },
+  ];
+
+  return (
+    <footer className="relative w-full overflow-hidden bg-gradient-to-b from-white to-[#eef5fb] py-16">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-300/70 to-transparent" />
+      <div className="container-x flex flex-col items-center text-center">
+        {/* circular brand mark */}
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-50 ring-1 ring-brand-100">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-navy-900">
+            <Icon name="heart-pulse" className="h-6 w-6 text-cyan-300" />
+          </span>
+        </div>
+        <div className="mt-4">
+          <BrandMark subtitle className="justify-center" />
+        </div>
+        <p className="mt-4 max-w-md text-sm text-navy-500">
+          {lang === "ar" ? CLINIC.tagline.ar : CLINIC.tagline.en}
+        </p>
+
+        {/* nav links */}
+        <nav className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href} className="text-sm font-semibold text-navy-600 transition hover:text-brand-700">
+              {lang === "ar" ? l.ar : l.en}
+            </Link>
+          ))}
+        </nav>
+
+        {/* social buttons */}
+        <div className="mt-8 flex items-center justify-center gap-3">
+          {socials.map((s) =>
+            s.enabled ? (
+              <a
+                key={s.name}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-navy-100 bg-white text-navy-700 shadow-soft transition hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700"
+              >
+                <Icon name={s.name} className="h-5 w-5" />
+                <span className="sr-only">{s.label}</span>
+              </a>
+            ) : (
+              <span
+                key={s.name}
+                aria-disabled="true"
+                title={t("قريبًا", "Coming soon")}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-navy-100 bg-white/60 text-navy-300"
+              >
+                <Icon name={s.name} className="h-5 w-5" />
+                <span className="sr-only">{s.label} ({t("قريبًا", "coming soon")})</span>
+              </span>
+            )
+          )}
+        </div>
+
+        {/* newsletter */}
+        <form onSubmit={onSubscribe} className="mt-9 w-full max-w-md">
+          {sub === "done" ? (
+            <p className="rounded-2xl bg-mint-50 px-4 py-3 text-sm font-semibold text-mint-600">
+              {t("تم تسجيل بريدك، شكرًا لاشتراكك.", "Your email is registered — thanks for subscribing.")}
+            </p>
+          ) : (
+            <div className="flex items-center gap-2 rounded-full border border-navy-100 bg-white p-1.5 shadow-soft">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("أدخل بريدك للاشتراك بالنصائح الطبية", "Enter your email for medical tips")}
+                aria-label={t("البريد الإلكتروني", "Email")}
+                className="min-w-0 flex-1 bg-transparent px-4 py-2 text-sm text-navy-800 outline-none placeholder:text-navy-400"
+              />
+              <button type="submit" disabled={sub === "sending"} className="btn-primary shrink-0 px-5 py-2.5 text-sm">
+                {sub === "sending" ? t("...", "...") : t("اشترك", "Subscribe")}
+                <Icon name="send" className="h-4 w-4 rtl:rotate-180" />
+              </button>
+            </div>
+          )}
+        </form>
+
+        {/* contact line */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-navy-500">
+          <a href={`tel:${CLINIC.phone}`} className="flex items-center gap-1.5 hover:text-brand-700"><Icon name="phone" className="h-4 w-4 text-brand-500" /> {CLINIC.phone}</a>
+          <a href={`mailto:${CLINIC.email}`} className="flex items-center gap-1.5 hover:text-brand-700"><Icon name="mail" className="h-4 w-4 text-brand-500" /> {CLINIC.email}</a>
+          <span className="flex items-center gap-1.5"><Icon name="pin" className="h-4 w-4 text-brand-500" /> {lang === "ar" ? CLINIC.address.ar : CLINIC.address.en}</span>
+        </div>
+
+        {/* disclaimer + copyright */}
+        <div className="mt-9 w-full border-t border-navy-100 pt-6">
+          <p className="mx-auto max-w-2xl text-xs leading-relaxed text-navy-400">
+            {t(
+              "المحتوى الطبي في هذا الموقع لأغراض تثقيفية عامة ولا يُعد تشخيصًا أو بديلًا عن مراجعة الطبيب. الحجز عبر الموقع طلب أولي وليس تأكيدًا طبيًا نهائيًا.",
+              "The medical content on this website is for general educational purposes only and does not replace medical consultation. Website booking is an initial request, not a final medical confirmation."
+            )}
+          </p>
+          <p className="mt-4 text-xs font-semibold text-navy-500">
+            © 2026 KAMALIA Medical Center. {t("جميع الحقوق محفوظة.", "All rights reserved.")}
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
