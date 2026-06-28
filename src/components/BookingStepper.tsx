@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useLang } from "@/lib/i18n";
 import { FORMSPREE, whatsappHref } from "@/lib/clinic";
 import services from "@/data/services.json";
@@ -337,12 +337,14 @@ function DesktopDatePicker({
   const [open, setOpen] = useState(false);
   const id = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const today = useMemo(() => startOfDay(new Date()), []);
   const selected = value ? parseDateValue(value) : null;
   const [viewDate, setViewDate] = useState(() => selected ?? today);
   const locale = lang === "ar" ? DATE_LOCALE.ar : DATE_LOCALE.en;
   const weekdays = lang === "ar" ? WEEKDAYS.ar : WEEKDAYS.en;
   const days = useMemo(() => calendarDays(viewDate), [viewDate]);
+  const placement = usePopoverPlacement(open, triggerRef, DATE_POPOVER_HEIGHT);
 
   useEffect(() => {
     if (value) setViewDate(parseDateValue(value));
@@ -356,6 +358,7 @@ function DesktopDatePicker({
   return (
     <div ref={rootRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         className={pickerTriggerCls}
         aria-label={label}
@@ -373,7 +376,12 @@ function DesktopDatePicker({
       </button>
 
       {open && (
-        <div id={id} role="dialog" aria-label={label} className="absolute left-0 right-0 top-full z-50 mt-2 rounded-3xl border border-white/70 bg-white/95 p-4 shadow-xl ring-1 ring-slate-100 backdrop-blur-xl">
+        <div
+          id={id}
+          role="dialog"
+          aria-label={label}
+          className={`absolute left-0 right-0 z-[80] rounded-3xl border border-white/70 bg-white/95 p-4 shadow-xl ring-1 ring-slate-100 backdrop-blur-xl ${placement === "above" ? "bottom-full mb-2" : "top-full mt-2"}`}
+        >
           <div className="mb-4 flex items-center justify-between gap-3">
             <button
               type="button"
@@ -454,14 +462,17 @@ function DesktopTimePicker({
   const [open, setOpen] = useState(false);
   const id = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const slots = useMemo(() => buildTimeSlots(TIME_SLOT_CONFIG), []);
   const display = value ? formatTimeDisplay(value, lang) : "";
+  const placement = usePopoverPlacement(open, triggerRef, TIME_POPOVER_HEIGHT);
 
   useClosePopover(open, rootRef, () => setOpen(false));
 
   return (
     <div ref={rootRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         className={pickerTriggerCls}
         aria-label={label}
@@ -479,7 +490,12 @@ function DesktopTimePicker({
       </button>
 
       {open && (
-        <div id={id} role="dialog" aria-label={label} className="absolute left-0 right-0 top-full z-50 mt-2 rounded-3xl border border-white/70 bg-white/95 p-3 shadow-xl ring-1 ring-slate-100 backdrop-blur-xl">
+        <div
+          id={id}
+          role="dialog"
+          aria-label={label}
+          className={`absolute left-0 right-0 z-[80] rounded-3xl border border-white/70 bg-white/95 p-3 shadow-xl ring-1 ring-slate-100 backdrop-blur-xl ${placement === "above" ? "bottom-full mb-2" : "top-full mt-2"}`}
+        >
           <div className="grid max-h-72 grid-cols-2 gap-2 overflow-y-auto pr-1">
             {slots.map((slot) => {
               const selected = value === slot;
@@ -509,7 +525,45 @@ function DesktopTimePicker({
   );
 }
 
-function useClosePopover(open: boolean, ref: React.RefObject<HTMLElement>, onClose: () => void) {
+/* ---------- estimated popover heights (px) for collision detection ---------- */
+// Date picker: header ~56 + weekday row ~24 + 6 calendar rows × 44 = ~344, plus p-4 padding (~32) ≈ 400
+const DATE_POPOVER_HEIGHT = 400;
+// Time picker: max-h-72 = 288px + p-3 padding (~24) ≈ 312
+const TIME_POPOVER_HEIGHT = 312;
+const POPOVER_SAFE_GAP = 24; // px safety margin before footer
+
+/**
+ * Lightweight collision-aware placement hook.
+ * Returns "above" or "below" depending on available viewport space.
+ */
+function usePopoverPlacement(
+  open: boolean,
+  triggerRef: React.RefObject<HTMLButtonElement | null>,
+  estimatedHeight: number,
+): "above" | "below" {
+  const [placement, setPlacement] = useState<"above" | "below">("below");
+
+  const calculate = useCallback(() => {
+    const el = triggerRef.current;
+    if (!el) return "below" as const;
+    const rect = el.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    if (spaceBelow < estimatedHeight + POPOVER_SAFE_GAP && spaceAbove > estimatedHeight) {
+      return "above" as const;
+    }
+    return "below" as const;
+  }, [triggerRef, estimatedHeight]);
+
+  useEffect(() => {
+    if (!open) return;
+    setPlacement(calculate());
+  }, [open, calculate]);
+
+  return placement;
+}
+
+function useClosePopover(open: boolean, ref: React.RefObject<HTMLElement | null>, onClose: () => void) {
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: MouseEvent | TouchEvent) => {

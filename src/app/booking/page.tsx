@@ -13,7 +13,7 @@ export default function BookingPage() {
   return (
     <>
       <PageHeader ar="احجز موعدك" en="Book Your Appointment" subAr="خطوات بسيطة لتأكيد طلب حجزك. سنتواصل معك للتأكيد." subEn="Simple steps to submit your booking request. We'll contact you to confirm." icon="calendar" />
-      <div className="container-x py-10">
+      <div className="container-x py-10 lg:pb-28">
         <BookingStepper />
       </div>
     </>
