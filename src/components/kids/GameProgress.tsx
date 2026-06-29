@@ -17,13 +17,13 @@ export default function GameProgress({
   const pct = Math.max(0, Math.min(100, (current / total) * 100));
   return (
     <div className="mx-auto mb-6 max-w-md">
-      <div className="mb-2 flex items-center justify-between text-sm font-semibold text-white/80">
+      <div className="mb-2 flex items-center justify-between text-sm font-semibold text-navy-600">
         <span>
           {t(labelAr, labelEn)} {current}/{total}
         </span>
       </div>
       <div
-        className="h-3 w-full overflow-hidden rounded-full bg-white/15"
+        className="h-3 w-full overflow-hidden rounded-full bg-navy-100"
         role="progressbar"
         aria-valuenow={current}
         aria-valuemin={0}
@@ -31,7 +31,7 @@ export default function GameProgress({
         aria-label={t(labelAr, labelEn)}
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-brand-400 transition-[width] duration-500 ease-out"
+          className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-brand-500 transition-[width] duration-500 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>

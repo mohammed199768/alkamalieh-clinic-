@@ -36,7 +36,6 @@ export default function ShapeSequenceView() {
     setPhase("show");
   }, []);
 
-  // hide the sequence after a calm interval
   useEffect(() => {
     if (phase !== "show") return;
     const ms = 900 + seq.length * 700;
@@ -58,7 +57,6 @@ export default function ShapeSequenceView() {
     setInput(next);
     const idx = next.length - 1;
     if (next[idx] !== seq[idx]) {
-      // gentle miss — replay the same round
       setFeedback("no");
       window.setTimeout(() => startRound(round), 1100);
       return;
@@ -96,8 +94,8 @@ export default function ShapeSequenceView() {
       {phase === "ready" && (
         <div className="mx-auto max-w-md">
           <GlassCard className="text-center">
-            <h2 className="text-xl font-extrabold text-white">{t("هل أنت مستعد؟", "Ready?")}</h2>
-            <p className="mt-2 text-white/75">
+            <h2 className="text-xl font-extrabold text-navy-900">{t("هل أنت مستعد؟", "Ready?")}</h2>
+            <p className="mt-2 text-navy-600">
               {t(
                 "سيظهر تسلسل من الأشكال لبضع لحظات، ثم تكرّره بالترتيب نفسه.",
                 "A sequence of shapes appears for a few moments, then you repeat it in the same order."
@@ -114,17 +112,17 @@ export default function ShapeSequenceView() {
         <div className="mx-auto max-w-md">
           <GameProgress current={round + 1} total={LENGTHS.length} />
           <GlassCard>
-            <p className="mb-4 text-center text-sm font-bold text-cyan-200">
+            <p className="mb-4 text-center text-sm font-bold text-brand-600">
               {phase === "show" ? t("احفظ الترتيب…", "Memorize the order…") : t("الآن كرّر الترتيب", "Now repeat the order")}
             </p>
 
-            <div className="flex min-h-[64px] flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div className="flex min-h-[64px] flex-wrap items-center justify-center gap-2 rounded-2xl border border-navy-100 bg-brand-50/60 p-3">
               {phase === "show" ? (
                 seq.map((s, idx) => <KidsObject key={idx} id={s} size={44} />)
               ) : input.length ? (
                 input.map((s, idx) => <KidsObject key={idx} id={s} size={36} />)
               ) : (
-                <span className="text-sm text-white/50">{t("انقر الأشكال بالترتيب", "Tap the shapes in order")}</span>
+                <span className="text-sm text-navy-400">{t("انقر الأشكال بالترتيب", "Tap the shapes in order")}</span>
               )}
             </div>
 
@@ -137,7 +135,7 @@ export default function ShapeSequenceView() {
                     onClick={() => tap(obj)}
                     disabled={!!feedback}
                     aria-label={lang === "ar" ? GAME_OBJECTS[obj].label.ar : GAME_OBJECTS[obj].label.en}
-                    className="flex aspect-square items-center justify-center rounded-2xl border-2 border-white/15 bg-white/10 transition hover:border-cyan-300/60 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 disabled:opacity-50"
+                    className="flex aspect-square items-center justify-center rounded-2xl border-2 border-navy-100 bg-white transition hover:border-brand-300 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 disabled:opacity-50"
                   >
                     <KidsObject id={obj} size={32} />
                   </button>
@@ -146,7 +144,7 @@ export default function ShapeSequenceView() {
             )}
 
             {feedback && (
-              <p className="mt-4 text-center text-sm font-semibold text-white/80">
+              <p className="mt-4 text-center text-sm font-semibold text-navy-600">
                 {feedback === "ok" ? t("ممتاز! 🌟", "Excellent! 🌟") : t("قريب جدًا — لنجرّب مرة أخرى.", "So close — let's try again.")}
               </p>
             )}

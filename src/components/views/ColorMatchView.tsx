@@ -10,7 +10,6 @@ import { GAME_COLORS, type ColorId, type ObjectId } from "@/data/kidsGameObjects
 
 const ROUNDS = 8;
 
-// Each object maps to the color a child should match it with.
 const OBJECT_COLOR: { obj: ObjectId; color: ColorId }[] = [
   { obj: "water", color: "blue" },
   { obj: "soap", color: "blue" },
@@ -111,22 +110,22 @@ export default function ColorMatchView() {
           <GameProgress current={i + 1} total={ROUNDS} />
           <GlassCard>
             <div className="flex flex-col items-center gap-3">
-              <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/10 bg-white/5">
+              <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-navy-100 bg-brand-50/70">
                 <KidsObject id={r.obj} size={72} />
               </div>
-              <p className="text-lg font-bold text-white">{t("ما لون هذا العنصر؟", "What color is this object?")}</p>
+              <p className="text-lg font-bold text-navy-900">{t("ما لون هذا العنصر؟", "What color is this object?")}</p>
             </div>
             <div className="mt-6 grid grid-cols-5 gap-2.5">
               {COLOR_IDS.map((cid) => {
                 const isAnswer = cid === r.color;
                 const state =
                   picked === null
-                    ? "ring-white/20"
+                    ? "ring-navy-200"
                     : isAnswer
-                    ? "ring-4 ring-mint-300 scale-105"
+                    ? "ring-4 ring-mint-400 scale-105"
                     : picked === cid
-                    ? "ring-4 ring-amber-300/70 opacity-80"
-                    : "opacity-50 ring-white/10";
+                    ? "ring-4 ring-amber-300 opacity-80"
+                    : "opacity-50 ring-navy-100";
                 return (
                   <button
                     key={cid}
@@ -134,14 +133,14 @@ export default function ColorMatchView() {
                     onClick={() => choose(cid)}
                     disabled={picked !== null}
                     aria-label={lang === "ar" ? GAME_COLORS[cid].label.ar : GAME_COLORS[cid].label.en}
-                    className={`aspect-square rounded-2xl ring-2 transition focus:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300 ${state}`}
+                    className={`aspect-square rounded-2xl ring-2 transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-400 ${state}`}
                     style={{ backgroundColor: GAME_COLORS[cid].hex }}
                   />
                 );
               })}
             </div>
             {picked !== null && (
-              <p className="mt-4 text-center text-sm font-semibold text-white/80">
+              <p className="mt-4 text-center text-sm font-semibold text-navy-600">
                 {picked === r.color ? t("مطابقة صحيحة! 🌟", "Correct match! 🌟") : t("لا بأس، لنكمل!", "That's okay, let's continue!")}
               </p>
             )}

@@ -121,19 +121,19 @@ export default function FocusLabView() {
       {phase === "ready" && (
         <div className="mx-auto max-w-md">
           <GlassCard className="text-center">
-            <h2 className="text-xl font-extrabold text-white">{t("اختر طريقة اللعب", "Choose how to play")}</h2>
-            <label className="mt-5 flex items-center justify-center gap-3 text-white/85">
+            <h2 className="text-xl font-extrabold text-navy-900">{t("اختر طريقة اللعب", "Choose how to play")}</h2>
+            <label className="mt-5 flex items-center justify-center gap-3 text-navy-700">
               <input
                 type="checkbox"
                 checked={challenge}
                 onChange={(e) => setChallenge(e.target.checked)}
-                className="h-5 w-5 rounded border-white/30 bg-white/10 accent-cyan-400"
+                className="h-5 w-5 rounded border-navy-300 accent-brand-500"
               />
               <span className="font-semibold">
                 {t("وضع التحدي (عدّاد هادئ)", "Challenge mode (calm timer)")}
               </span>
             </label>
-            <p className="mt-2 text-xs text-white/55">
+            <p className="mt-2 text-xs text-navy-400">
               {t("الوضع العادي بلا وقت إطلاقًا.", "Normal mode has no timer at all.")}
             </p>
             <button onClick={start} className="btn-primary mt-6 w-full">
@@ -148,19 +148,19 @@ export default function FocusLabView() {
           <GameProgress current={i + 1} total={ROUNDS} />
           <GlassCard>
             <div className="mb-4 flex flex-col items-center gap-2 text-center">
-              <p className="text-lg font-bold text-white">
+              <p className="text-lg font-bold text-navy-900">
                 {t("انقر على:", "Tap the:")}{" "}
-                <span className="text-cyan-200">
+                <span className="text-brand-600">
                   {lang === "ar" ? GAME_OBJECTS[r.target].label.ar : GAME_OBJECTS[r.target].label.en}
                 </span>
               </p>
               <KidsObject id={r.target} size={40} />
               {challenge && (
-                <p className="text-sm font-semibold text-white/70" aria-live="polite">
+                <p className="text-sm font-semibold text-navy-500" aria-live="polite">
                   ⏳ {seconds}s
                 </p>
               )}
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-navy-400">
                 {found.length}/{r.targetCount}
               </p>
             </div>
@@ -175,12 +175,12 @@ export default function FocusLabView() {
                     onClick={() => tap(idx)}
                     disabled={isFound}
                     aria-label={lang === "ar" ? GAME_OBJECTS[c.obj].label.ar : GAME_OBJECTS[c.obj].label.en}
-                    className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
+                    className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
                       isFound
-                        ? "border-mint-300 bg-mint-400/25"
+                        ? "border-mint-400 bg-mint-50"
                         : isMiss
-                        ? "border-amber-300/70 bg-amber-300/20"
-                        : "border-white/15 bg-white/10 hover:border-cyan-300/60 hover:bg-white/20"
+                        ? "border-amber-300 bg-amber-50"
+                        : "border-navy-100 bg-white hover:border-brand-300 hover:bg-brand-50"
                     }`}
                   >
                     <KidsObject id={c.obj} size={30} glow={false} />

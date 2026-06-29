@@ -23,11 +23,10 @@ export default function GameOptionButton({
   className?: string;
 }) {
   const styles: Record<State, string> = {
-    idle:
-      "border-white/15 bg-white/10 text-white hover:bg-white/20 hover:border-cyan-300/60",
-    correct: "border-mint-300 bg-mint-400/25 text-white",
-    wrong: "border-amber-300/70 bg-amber-300/20 text-white",
-    muted: "border-white/10 bg-white/5 text-white/50",
+    idle: "border-navy-100 bg-white text-navy-800 hover:border-brand-300 hover:bg-brand-50",
+    correct: "border-mint-400 bg-mint-50 text-mint-600",
+    wrong: "border-amber-300 bg-amber-50 text-amber-600",
+    muted: "border-navy-100 bg-white/60 text-navy-400 opacity-70",
   };
   return (
     <button
@@ -35,7 +34,7 @@ export default function GameOptionButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
-      className={`flex min-h-16 items-center justify-center gap-2 rounded-2xl border-2 px-4 py-4 text-lg font-bold backdrop-blur transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-950 disabled:cursor-default ${styles[state]} ${className}`}
+      className={`flex min-h-16 items-center justify-center gap-2 rounded-2xl border-2 px-4 py-4 text-lg font-bold shadow-xs transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 disabled:cursor-default ${styles[state]} ${className}`}
     >
       {children}
     </button>

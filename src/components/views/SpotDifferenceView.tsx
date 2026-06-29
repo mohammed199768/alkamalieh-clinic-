@@ -101,18 +101,18 @@ export default function SpotDifferenceView() {
         <div className="mx-auto max-w-2xl">
           <GameProgress current={i + 1} total={ROUNDS} />
           <div className="grid gap-4 sm:grid-cols-2">
-            <Panel>
-              <p className="mb-3 text-center text-sm font-bold text-cyan-200">{t("اللوحة الأولى", "Panel one")}</p>
+            <GlassCard className="!p-4">
+              <p className="mb-3 text-center text-sm font-bold text-brand-600">{t("اللوحة الأولى", "Panel one")}</p>
               <div className="grid grid-cols-3 gap-3">
                 {r.left.map((o, idx) => (
-                  <div key={idx} className="flex aspect-square items-center justify-center rounded-2xl bg-white/5">
+                  <div key={idx} className="flex aspect-square items-center justify-center rounded-2xl bg-brand-50/70">
                     <KidsObject id={o} size={40} />
                   </div>
                 ))}
               </div>
-            </Panel>
-            <Panel>
-              <p className="mb-3 text-center text-sm font-bold text-cyan-200">{t("اللوحة الثانية", "Panel two")}</p>
+            </GlassCard>
+            <GlassCard className="!p-4">
+              <p className="mb-3 text-center text-sm font-bold text-brand-600">{t("اللوحة الثانية", "Panel two")}</p>
               <div className="grid grid-cols-3 gap-3">
                 {r.right.map((o, idx) => {
                   const reveal = picked !== null && idx === r.diff;
@@ -124,12 +124,12 @@ export default function SpotDifferenceView() {
                       onClick={() => choose(idx)}
                       disabled={picked !== null}
                       aria-label={t("اختر العنصر", "Choose object")}
-                      className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
+                      className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
                         reveal
-                          ? "border-mint-300 bg-mint-400/25"
+                          ? "border-mint-400 bg-mint-50"
                           : wrong
-                          ? "border-amber-300/70 bg-amber-300/20"
-                          : "border-transparent bg-white/5 hover:border-cyan-300/60 hover:bg-white/15"
+                          ? "border-amber-300 bg-amber-50"
+                          : "border-transparent bg-brand-50/70 hover:border-brand-300 hover:bg-brand-50"
                       }`}
                     >
                       <KidsObject id={o} size={40} />
@@ -137,10 +137,10 @@ export default function SpotDifferenceView() {
                   );
                 })}
               </div>
-            </Panel>
+            </GlassCard>
           </div>
           {picked !== null && (
-            <p className="mt-4 text-center text-sm font-semibold text-white/80">
+            <p className="mt-4 text-center text-sm font-semibold text-navy-600">
               {picked === r.diff
                 ? t("عين حادة! 🌟", "Sharp eye! 🌟")
                 : t("هذا هو المختلف — لنكمل!", "That was the different one — let's continue!")}
@@ -150,8 +150,4 @@ export default function SpotDifferenceView() {
       )}
     </KidsGameShell>
   );
-}
-
-function Panel({ children }: { children: React.ReactNode }) {
-  return <GlassCard className="!p-4">{children}</GlassCard>;
 }

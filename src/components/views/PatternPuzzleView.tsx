@@ -70,15 +70,15 @@ export default function PatternPuzzleView() {
         <div className="mx-auto max-w-md">
           <GameProgress current={i + 1} total={rounds.length} />
           <GlassCard>
-            <div className="mb-5 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div className="mb-5 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-navy-100 bg-brand-50/60 p-3">
               {r.sequence.map((s, idx) => (
                 <KidsObject key={idx} id={s} size={40} />
               ))}
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-dashed border-cyan-300/60 text-2xl font-extrabold text-cyan-200">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-dashed border-brand-300 text-2xl font-extrabold text-brand-500">
                 ?
               </span>
             </div>
-            <h2 className="text-center text-lg font-bold text-white">
+            <h2 className="text-center text-lg font-bold text-navy-900">
               {t("ما الذي يأتي بعد علامة السؤال؟", "What comes after the question mark?")}
             </h2>
             <div className="mt-5 grid grid-cols-3 gap-3">
@@ -105,7 +105,7 @@ export default function PatternPuzzleView() {
               })}
             </div>
             {picked !== null && (
-              <p className="mt-4 text-center text-sm font-semibold text-white/80">
+              <p className="mt-4 text-center text-sm font-semibold text-navy-600">
                 {picked === r.answer
                   ? t("رائع! 🌟", "Awesome! 🌟")
                   : t("لا بأس، لنكمل!", "That's okay, let's continue!")}

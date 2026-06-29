@@ -65,7 +65,7 @@ export default function HealthyQuizView() {
         <div className="mx-auto max-w-md">
           <GameProgress current={i + 1} total={qs.length} labelAr="سؤال" labelEn="Question" />
           <GlassCard>
-            <h2 className="text-center text-xl font-bold text-white">
+            <h2 className="text-center text-xl font-bold text-navy-900">
               {lang === "ar" ? qs[i].q.ar : qs[i].q.en}
             </h2>
             <div className="mt-5 space-y-3">
@@ -93,7 +93,7 @@ export default function HealthyQuizView() {
               })}
             </div>
             {picked !== null && (
-              <p className="mt-4 text-center text-sm font-semibold text-white/80">
+              <p className="mt-4 text-center text-sm font-semibold text-navy-600">
                 {picked === qs[i].answer ? t("إجابة صحيحة! 🌟", "Correct! 🌟") : t("محاولة جيدة!", "Good try!")}
               </p>
             )}

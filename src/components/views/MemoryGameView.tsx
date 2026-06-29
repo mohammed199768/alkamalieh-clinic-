@@ -97,7 +97,7 @@ export default function MemoryGameView() {
         />
       ) : (
         <div className="mx-auto max-w-md">
-          <p className="mb-4 text-center text-sm font-semibold text-white/70">
+          <p className="mb-4 text-center text-sm font-semibold text-navy-500">
             {t("الحركات", "Moves")}: {moves}
           </p>
           <GlassCard>
@@ -109,8 +109,8 @@ export default function MemoryGameView() {
                     key={c.key}
                     onClick={() => click(i)}
                     aria-label={show ? undefined : t("بطاقة مقلوبة", "Hidden card")}
-                    className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
-                      show ? "border-mint-300/60 bg-white/15" : "border-white/15 bg-gradient-to-br from-brand-500/40 to-cyan-500/30 hover:from-brand-500/60"
+                    className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
+                      show ? "border-mint-400 bg-white" : "border-white bg-gradient-to-br from-brand-300 to-cyan-300 shadow-soft hover:from-brand-400 hover:to-cyan-400"
                     }`}
                   >
                     {show ? <KidsObject id={c.id} size={36} /> : null}

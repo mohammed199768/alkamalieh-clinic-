@@ -9,7 +9,6 @@ import KidsObject from "@/components/kids/KidsObject";
 import Icon from "@/components/Icon";
 import type { ObjectId } from "@/data/kidsGameObjects";
 
-// '.' open path, '#' soft obstacle, 'S' start, 'G' goal
 type Level = { grid: string[]; goal: ObjectId; goalAr: string; goalEn: string };
 
 const LEVELS: Level[] = [
@@ -83,7 +82,6 @@ export default function HealthyMazeView() {
     [level.grid, rows, cols, reachedAt]
   );
 
-  // reaching the goal
   useEffect(() => {
     if (pos.r === goalPos.r && pos.c === goalPos.c && reachedAt === null) {
       setReachedAt(lvl);
@@ -97,7 +95,6 @@ export default function HealthyMazeView() {
     }
   }, [pos, goalPos.r, goalPos.c, lvl, reachedAt, loadLevel]);
 
-  // keyboard arrows
   useEffect(() => {
     if (phase !== "play") return;
     const onKey = (e: KeyboardEvent) => {
@@ -141,7 +138,7 @@ export default function HealthyMazeView() {
         <div className="mx-auto max-w-md">
           <GameProgress current={lvl + 1} total={LEVELS.length} labelAr="متاهة" labelEn="Maze" />
           <GlassCard>
-            <p className="mb-4 text-center font-bold text-cyan-200">
+            <p className="mb-4 text-center font-bold text-brand-600">
               {lang === "ar" ? level.goalAr : level.goalEn}
             </p>
             <div
@@ -159,7 +156,7 @@ export default function HealthyMazeView() {
                     <div
                       key={`${r}-${c}`}
                       className={`flex h-10 w-10 items-center justify-center rounded-lg sm:h-11 sm:w-11 ${
-                        isWall ? "bg-white/5" : "bg-white/15"
+                        isWall ? "bg-navy-100" : "bg-brand-50"
                       }`}
                     >
                       {isChar ? (
@@ -169,7 +166,7 @@ export default function HealthyMazeView() {
                       ) : isGoal ? (
                         <KidsObject id={level.goal} size={28} />
                       ) : isWall ? (
-                        <span aria-hidden className="text-base opacity-70">
+                        <span aria-hidden className="text-base opacity-80">
                           ☁️
                         </span>
                       ) : null}
@@ -180,7 +177,7 @@ export default function HealthyMazeView() {
             </div>
 
             {reachedAt !== null && (
-              <p className="mt-4 text-center text-sm font-semibold text-mint-200">
+              <p className="mt-4 text-center text-sm font-semibold text-mint-500">
                 {t("وصلت! أحسنت 🌟", "You made it! Great 🌟")}
               </p>
             )}
@@ -201,7 +198,7 @@ export default function HealthyMazeView() {
                 <Icon name="chevron" className="h-5 w-5" />
               </PadButton>
             </div>
-            <p className="mt-4 text-center text-xs text-white/55">
+            <p className="mt-4 text-center text-xs text-navy-400">
               {t("يمكنك أيضًا استخدام مفاتيح الأسهم.", "You can also use the arrow keys.")}
             </p>
           </GlassCard>
@@ -225,7 +222,7 @@ function PadButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-white/15 bg-white/10 text-white transition hover:border-cyan-300/60 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+      className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-navy-200 bg-white text-navy-700 shadow-xs transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
     >
       {children}
     </button>

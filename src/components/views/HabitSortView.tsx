@@ -77,30 +77,30 @@ export default function HabitSortView() {
           <GameProgress current={idx + 1} total={items.length} labelAr="عادة" labelEn="Habit" />
           <GlassCard
             className={`flex flex-col items-center gap-3 transition ${
-              feedback === "ok" ? "!bg-mint-400/20" : feedback === "no" ? "!bg-amber-300/15" : ""
+              feedback === "ok" ? "!bg-mint-50" : feedback === "no" ? "!bg-amber-50" : ""
             }`}
           >
             <span className="text-7xl" aria-hidden>{current.emoji}</span>
-            <span className="text-xl font-bold text-white">
+            <span className="text-xl font-bold text-navy-900">
               {lang === "ar" ? current.label.ar : current.label.en}
             </span>
           </GlassCard>
           <div className="mt-6 grid grid-cols-2 gap-4">
             <button
               onClick={() => choose(true)}
-              className="rounded-3xl border-2 border-mint-300/50 bg-mint-400/20 py-6 text-lg font-extrabold text-mint-100 backdrop-blur transition hover:-translate-y-1 hover:bg-mint-400/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+              className="rounded-3xl border-2 border-mint-200 bg-mint-50 py-6 text-lg font-extrabold text-mint-600 shadow-card transition hover:-translate-y-1 hover:bg-mint-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               😊 {lang === "ar" ? data.habits.good.ar : data.habits.good.en}
             </button>
             <button
               onClick={() => choose(false)}
-              className="rounded-3xl border-2 border-amber-300/50 bg-amber-300/15 py-6 text-lg font-extrabold text-amber-100 backdrop-blur transition hover:-translate-y-1 hover:bg-amber-300/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+              className="rounded-3xl border-2 border-amber-200 bg-amber-50 py-6 text-lg font-extrabold text-amber-600 shadow-card transition hover:-translate-y-1 hover:bg-amber-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               🙂 {lang === "ar" ? data.habits.bad.ar : data.habits.bad.en}
             </button>
           </div>
           {feedback && (
-            <p className="mt-4 text-sm font-semibold text-white/80">
+            <p className="mt-4 text-sm font-semibold text-navy-600">
               {feedback === "ok" ? t("أحسنت! 🌟", "Well done! 🌟") : t("لا بأس، لنكمل!", "That's okay, let's continue!")}
             </p>
           )}
