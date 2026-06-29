@@ -7,6 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "", "/services", "/booking", "/emergency", "/medical-tips",
     "/medical-minute", "/daily-stories", "/videos", "/kids",
     "/kids/memory-game", "/kids/healthy-quiz", "/kids/habit-sort",
+    "/kids/brain-challenge", "/kids/pattern-puzzle", "/kids/spot-difference",
+    "/kids/shape-sequence", "/kids/focus-lab", "/kids/healthy-maze", "/kids/color-match",
     "/bedtime-stories", "/contact", "/faq", "/privacy",
   ];
   const now = new Date();

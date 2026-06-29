@@ -1,11 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useLang } from "@/lib/i18n";
-import PageHeader from "@/components/PageHeader";
-import KidsRewardFlow from "@/components/KidsRewardFlow";
-import data from "@/data/kidsGames.json";
+import KidsGameShell, { GlassCard } from "@/components/kids/KidsGameShell";
+import KidsGameHeader from "@/components/kids/KidsGameHeader";
+import GameResult from "@/components/kids/GameResult";
+import KidsObject from "@/components/kids/KidsObject";
+import type { ObjectId } from "@/data/kidsGameObjects";
 
-type Card = { key: string; emoji: string; id: string };
+const PAIRS: ObjectId[] = ["apple", "water", "tooth", "moon", "soap", "carrot"];
+
+type Card = { key: string; id: ObjectId };
 
 function shuffle<T>(a: T[]): T[] {
   const r = [...a];
@@ -20,18 +24,24 @@ export default function MemoryGameView() {
   const { t } = useLang();
   const [cards, setCards] = useState<Card[]>([]);
   const [flipped, setFlipped] = useState<number[]>([]);
-  const [matched, setMatched] = useState<string[]>([]);
+  const [matched, setMatched] = useState<ObjectId[]>([]);
   const [moves, setMoves] = useState(0);
   const [won, setWon] = useState(false);
 
   const reset = () => {
-    const deck = data.memory.pairs.flatMap((p) => [
-      { key: `${p.id}-a`, emoji: p.emoji, id: p.id },
-      { key: `${p.id}-b`, emoji: p.emoji, id: p.id },
+    const deck = PAIRS.flatMap((id) => [
+      { key: `${id}-a`, id },
+      { key: `${id}-b`, id },
     ]);
-    setCards(shuffle(deck)); setFlipped([]); setMatched([]); setMoves(0); setWon(false);
+    setCards(shuffle(deck));
+    setFlipped([]);
+    setMatched([]);
+    setMoves(0);
+    setWon(false);
   };
-  useEffect(() => { reset(); }, []);
+  useEffect(() => {
+    reset();
+  }, []);
 
   useEffect(() => {
     if (flipped.length === 2) {
@@ -48,7 +58,7 @@ export default function MemoryGameView() {
   }, [flipped, cards]);
 
   useEffect(() => {
-    if (cards.length && matched.length === data.memory.pairs.length) {
+    if (cards.length && matched.length === PAIRS.length) {
       const tmo = setTimeout(() => setWon(true), 500);
       return () => clearTimeout(tmo);
     }
@@ -59,29 +69,61 @@ export default function MemoryGameView() {
     setFlipped((f) => [...f, i]);
   };
 
+  const level =
+    moves <= 10
+      ? { ar: "بطل الذاكرة", en: "Memory Hero" }
+      : moves <= 16
+      ? { ar: "مفكر ذكي", en: "Smart Thinker" }
+      : { ar: "مستكشف صغير", en: "Little Explorer" };
+
   return (
-    <>
-      <PageHeader ar="لعبة الذاكرة" en="Memory Game" subAr="طابق كل بطاقتين متشابهتين." subEn="Match each pair of cards." emoji="🧠" playful />
-      <div className="container-x py-10">
-        {won ? (
-          <KidsRewardFlow gameName={{ ar: "لعبة الذاكرة", en: "Memory Game" }} score={`${moves} ${t("حركة", "moves")}`} onReset={reset} />
-        ) : (
-          <div className="mx-auto max-w-md">
-            <p className="mb-4 text-center text-sm font-semibold text-slate-500">{t("الحركات", "Moves")}: {moves}</p>
+    <KidsGameShell>
+      <KidsGameHeader
+        ar="لعبة الذاكرة الصحية"
+        en="Healthy Memory Game"
+        subAr="طابق كل بطاقتين متشابهتين."
+        subEn="Match each pair of cards."
+        object="heart"
+      />
+      {won ? (
+        <GameResult
+          gameName={{ ar: "لعبة الذاكرة الصحية", en: "Healthy Memory Game" }}
+          headlineAr="نتيجة اللعبة"
+          headlineEn="Game Result"
+          levelAr={level.ar}
+          levelEn={level.en}
+          score={`${moves} ${t("حركة", "moves")}`}
+          onReset={reset}
+        />
+      ) : (
+        <div className="mx-auto max-w-md">
+          <p className="mb-4 text-center text-sm font-semibold text-white/70">
+            {t("الحركات", "Moves")}: {moves}
+          </p>
+          <GlassCard>
             <div className="grid grid-cols-4 gap-3">
               {cards.map((c, i) => {
                 const show = flipped.includes(i) || matched.includes(c.id);
                 return (
-                  <button key={c.key} onClick={() => click(i)} className={`flex aspect-square items-center justify-center rounded-2xl text-3xl shadow-card transition-all duration-200 ${show ? "bg-white" : "bg-brand-600"}`}>
-                    {show ? c.emoji : ""}
+                  <button
+                    key={c.key}
+                    onClick={() => click(i)}
+                    aria-label={show ? undefined : t("بطاقة مقلوبة", "Hidden card")}
+                    className={`flex aspect-square items-center justify-center rounded-2xl border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
+                      show ? "border-mint-300/60 bg-white/15" : "border-white/15 bg-gradient-to-br from-brand-500/40 to-cyan-500/30 hover:from-brand-500/60"
+                    }`}
+                  >
+                    {show ? <KidsObject id={c.id} size={36} /> : null}
                   </button>
                 );
               })}
             </div>
-            <button onClick={reset} className="btn-ghost mx-auto mt-6 block">{t("ابدأ من جديد", "Restart")}</button>
-          </div>
-        )}
-      </div>
-    </>
+          </GlassCard>
+          <button onClick={reset} className="btn-ghost mx-auto mt-6 block">
+            {t("ابدأ من جديد", "Restart")}
+          </button>
+        </div>
+      )}
+    </KidsGameShell>
   );
 }

@@ -1,0 +1,335 @@
+
+.text-box-container{
+  width: 100%;
+}
+
+.quiz-container{
+    background-color: rgb(77, 77, 147);
+    height: fit-content;
+    padding-bottom: 5%;
+    padding-top: 5%;
+}
+
+.top_section_of_quize{
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    margin-bottom: 3%;
+}
+
+.top_section_of_quize > div{
+    color: rgb(250, 246, 246);
+    font-weight: bolder;
+    font-size: 200%;
+}
+
+.top_section_of_quize > div > span{
+    color: rgb(103, 92, 92);
+}
+
+.top_section_of_quize  div:last-child{
+    color: rgb(6, 0, 0);
+    font-weight: bolder;
+    font-size: 250%;
+    text-decoration: none;
+}
+
+.top_section_of_quize  div:last-child:hover{
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0.6;
+}
+
+.Question_Image{
+    width: 60%;
+    margin: auto;
+    display: flex;
+}
+
+.Question_Image > img {
+    width: 100%;
+}
+
+.Answers_grid{
+    display: grid;
+    width: 70%;
+    margin: auto;
+    grid-template-columns: repeat(6,1fr);
+    gap: 2%;
+}
+
+
+.Answers_Item{
+    display: block;
+}
+
+.Answers_Item:hover{
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.Answers_Item > img{
+    width: 100%;
+    height: 100%;
+}
+
+.question_section{
+    color: white;
+    font-size: 250%;
+    width: 75%;
+    margin: auto;
+    font-weight: bold;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.Answers_grid button {
+    padding: 0% 5%;
+    background-color: rgb(63, 63, 112);
+    color: white;
+    font-weight: bolder;
+    border: none;
+    padding-left: -5%;
+    margin-top: 5%;
+    border-radius: 10px;
+    font-size: 30px;
+    border: 1px solid rgb(63, 63, 112);
+}
+
+.Answers_grid button:hover {
+    cursor: pointer;
+    background-color: rgba(240, 248, 255, 0);
+    border: 1px solid white;
+}
+
+
+/* ------------------------------------------------------ */
+
+
+.alert_result{
+    background-color: white;
+    width: 100%;
+    height: auto;
+}
+
+.middle-box{
+    width: 100%;
+    background-color: rgb(77, 77, 147);
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    color: white;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    justify-content: center;
+    align-items: center;
+}
+
+.middle-box > div:nth-child(2){
+    font-size: 130%;
+    margin: 1%;
+    width: fit-content;
+    font-weight: 600;
+}
+
+.middle-box > div:nth-child(3){
+    width: fit-content;
+}
+
+
+.middle-box > div:nth-child(3) button{
+    padding: 3% 5%;
+    background-color: rgb(96, 96, 221);;
+    color: white;
+    width: 200px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    font-size: 100%;
+    margin: 4%;
+}
+
+.middle-box >div:nth-child(3) button:hover{
+    cursor: pointer;
+}
+
+.double-partition{
+    display: flex;
+    background-color: white;
+    height: 100%;
+}
+
+.double-partition .left-child{
+    width: 60%;
+    color: rgb(33, 32, 32);
+    text-align: left;
+    padding: 3%;
+    gap: 5%;
+}
+
+.double-partition h3{
+    color: rgb(84, 83, 83);
+}
+
+.double-partition .left-child div:first-child p span{
+    font-weight: 700;
+    color: rgb(69, 68, 68);
+}
+
+.double-partition .left-child div:nth-child(2) p{
+    font-weight: 500;
+    color: rgb(8, 140, 187);
+}
+
+.double-partition .left-child div:nth-child(2) p > button{
+    padding: 1%;
+    border: none;
+    background-color: rgb(211, 211, 239);
+    border-radius: 5px;
+}
+
+.double-partition .left-child div:nth-child(2) p > button:hover{
+    cursor: pointer;
+    background-color: rgb(235, 235, 251);
+}
+
+.image-grid-container .image-gerid-section{
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    width: 40%;
+}
+
+.image-grid-container .image-gerid-section >img{
+    width: 80%;
+    margin: 2%;
+    border-radius: 50%;
+}
+
+.image-grid-container .image-gerid-section >img:hover{
+    cursor: pointer;
+}
+
+.right-child{
+    padding: 3%;
+    width: 30%;
+    color: rgb(127, 155, 161);
+}
+
+.right-child div:first-child {
+    text-align: left;
+}
+
+.right-child div:first-child span{
+    font-size: 170%;
+}
+.checked {
+    color: orange;
+}
+
+.right-child div:nth-child(2) {
+    text-align: left;
+    font-size: 200%;
+}
+
+.right-child div:nth-child(3) div {
+    text-align: left;
+    display: grid;
+    width: 40%;
+    grid-template-columns: repeat(4,1fr);
+}
+
+.right-child div:nth-child(3) .our-social-networks{
+    text-align: left;
+    font-size: 150%;
+    font-weight: 600;
+}
+
+.right-child div:nth-child(3) div > div{
+    display: flex;
+    border-radius: 50px;
+    margin: 2%;
+    width: 30px;
+    height: 30px;
+    color: white;
+    background-color: rgb(127, 155, 161);
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+}
+
+.right-child div:nth-child(3) div > div:hover{
+    cursor: pointer;
+}
+
+
+@media all and (min-width: 751px) and (max-width: 1000px){
+    .question_section{
+        font-size: 200%;
+    }
+        
+    .Answers_grid button {
+        font-size: 20px;
+    }
+}
+
+@media all and (min-width: 551px) and (max-width: 750px){
+    .question_section{
+        font-size: 130%;
+    }
+
+    .Answers_grid button {
+        font-size: 20px;
+    }
+        
+    .quiz-container{
+        margin-top: 20%;
+    }
+    
+    .double-partition{
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        height: 100%;
+    }
+    .double-partition .left-child{
+        width: 90%;
+        margin: auto;
+    }
+
+    .double-partition .right-child{
+        width: 90%;
+        margin: auto;
+    }
+}
+
+
+@media all and (min-width: 280px) and (max-width: 550px){
+    .question_section{
+        font-size: 90%;
+    }
+    
+    .Answers_grid button {
+        font-size: 12px;
+    }
+    
+    .quiz-container{
+        margin-top: 20%;
+    }
+    
+    .double-partition{
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        height: 100%;
+    }
+    .double-partition .left-child{
+        width: 85%;
+        margin: auto;
+    }
+
+    .double-partition .right-child{
+        width: 85%;
+        margin: auto;
+    }
+}

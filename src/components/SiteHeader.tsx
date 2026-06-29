@@ -38,6 +38,7 @@ const CONTENT: Item[] = [
 
 const KIDS: Item[] = [
   { ar: "صغيرنا الذكي", en: "Smart Little One", href: "/kids", icon: "users" },
+  { ar: "تحدي الذكاء المرح", en: "Fun Brain Challenge", href: "/kids/brain-challenge", icon: "star" },
   { ar: "لعبة الذاكرة الصحية", en: "Memory game", href: "/kids/memory-game", icon: "sparkle" },
   { ar: "صح أم خطأ الصحي", en: "Healthy quiz", href: "/kids/healthy-quiz", icon: "check" },
   { ar: "رتّب العادة الصحية", en: "Habit sort", href: "/kids/habit-sort", icon: "star" },
