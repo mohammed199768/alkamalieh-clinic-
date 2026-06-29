@@ -4,7 +4,7 @@ import {
   MessageCircle, ShieldCheck, Phone, Clock, MapPin, Mail, Star, Check, ArrowRight,
   Play, Search, Music, Download, Sparkles, Activity, TestTube, Ambulance, Calendar,
   Users, User, ChevronRight, Microscope, Syringe, Video, Quote, Plus, Headset,
-  Globe, Award, BedDouble, Facebook, Instagram, Send, X, Menu, MapPinned, type LucideIcon,
+  Globe, Award, BedDouble, Facebook, Instagram, Send, X, Menu, MapPinned, Brain, type LucideIcon,
 } from "lucide-react";
 
 type Props = { name: string; className?: string };
@@ -18,7 +18,7 @@ const map: Record<string, LucideIcon> = {
   activity: Activity, vial: TestTube, ambulance: Ambulance, calendar: Calendar,
   users: Users, user: User, chevron: ChevronRight, microscope: Microscope,
   syringe: Syringe, video: Video, quote: Quote, plus: Plus, headset: Headset,
-  globe: Globe, award: Award, bed: BedDouble, facebook: Facebook, instagram: Instagram, send: Send, close: X, menu: Menu, directions: MapPinned,
+  globe: Globe, award: Award, bed: BedDouble, facebook: Facebook, instagram: Instagram, send: Send, close: X, menu: Menu, directions: MapPinned, brain: Brain,
 };
 
 export default function Icon({ name, className = "h-5 w-5" }: Props) {

@@ -45,6 +45,11 @@ const KIDS: Item[] = [
   { ar: "حكايات المساء", en: "Evening Stories", href: "/bedtime-stories", icon: "bed" },
 ];
 
+const KNOW_YOURSELF: Item[] = [
+  { ar: "اعرف نفسك", en: "Know Yourself", href: "/know-yourself", icon: "brain" },
+  { ar: "اختبار الذكاء المنطقي", en: "Logical Intelligence Test", href: "/know-yourself/iq-test", icon: "activity" },
+];
+
 const CONTACT: Item[] = [
   { ar: "واتساب", en: "WhatsApp", href: whatsappHref(), icon: "whatsapp", external: true },
   { ar: "فيسبوك", en: "Facebook", href: CLINIC.facebook, icon: "facebook", external: true },
@@ -57,6 +62,7 @@ const GROUPS: Group[] = [
   { ar: "احجز الآن", en: "Booking", href: "/booking" },
   { ar: "المحتوى الطبي", en: "Medical Content", items: CONTENT },
   { ar: "العائلة والأطفال", en: "Family & Kids", items: KIDS },
+  { ar: "اعرف نفسك", en: "Know Yourself", href: "/know-yourself" },
   { ar: "تواصل معنا", en: "Contact", items: [{ ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" }, ...CONTACT] },
 ];
 
@@ -259,6 +265,7 @@ function MobileMenu({
     { head: { ar: "الخدمات", en: "Services" }, items: SERVICES },
     { head: { ar: "المحتوى الطبي", en: "Medical Content" }, items: CONTENT },
     { head: { ar: "العائلة والأطفال", en: "Family & Kids" }, items: KIDS },
+    { head: { ar: "اعرف نفسك", en: "Know Yourself" }, items: KNOW_YOURSELF },
   ];
 
   if (!mounted) return null;
