@@ -32,7 +32,7 @@ export default function WhatsAppFloatingButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("تواصل عبر واتساب", "Chat on WhatsApp")}
-      className={`group fixed bottom-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#1faf54] text-white shadow-float ring-1 ring-white/30 transition-all duration-300 ltr:left-5 rtl:right-5 hover:scale-105 ${
+      className={`group fixed bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#1faf54] text-white shadow-float ring-1 ring-white/30 transition-all duration-300 ltr:left-5 rtl:right-5 hover:scale-105 lg:bottom-5 ${
         hidden ? "pointer-events-none translate-y-4 opacity-0" : "opacity-100"
       }`}
     >

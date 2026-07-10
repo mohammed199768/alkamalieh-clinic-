@@ -46,9 +46,9 @@ export default function MedicalContentDock() {
 
   return (
     <nav aria-label={t("المحتوى الطبي", "Medical Content")}>
-      {/* Desktop / tablet: vertical rail. Arabic → left, English → right. */}
+      {/* Desktop-only contextual rail; mobile/tablet use the application dock. */}
       <div
-        className={`fixed top-1/2 z-40 hidden -translate-y-1/2 md:block ltr:right-4 rtl:left-4 transition-all duration-300 ${hiddenCls}`}
+        className={`fixed top-1/2 z-40 hidden -translate-y-1/2 lg:block ltr:right-4 rtl:left-4 transition-all duration-300 ${hiddenCls}`}
       >
         <ul className="flex flex-col items-center gap-1.5 rounded-full border border-navy-100 bg-white/90 p-1.5 shadow-card backdrop-blur">
           {LINKS.map((l) => {
@@ -80,32 +80,6 @@ export default function MedicalContentDock() {
         </ul>
       </div>
 
-      {/* Mobile: compact bottom-center dock (respects safe area). */}
-      <div
-        className={`fixed left-1/2 z-40 -translate-x-1/2 md:hidden transition-all duration-300 ${hiddenCls}`}
-        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 0.75rem)" }}
-      >
-        <ul className="flex items-stretch gap-0.5 rounded-2xl border border-navy-100 bg-white/95 p-1 shadow-card backdrop-blur">
-          {LINKS.map((l) => {
-            const active = isActive(l.href);
-            return (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  aria-label={L(l)}
-                  aria-current={active ? "page" : undefined}
-                  className={`flex min-h-[44px] w-14 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
-                    active ? "bg-brand-50 text-brand-700" : "text-navy-600"
-                  }`}
-                >
-                  <Icon name={l.icon} className="h-5 w-5" />
-                  <span className="line-clamp-1 text-[9px] font-semibold leading-tight">{L(l)}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
     </nav>
   );
 }

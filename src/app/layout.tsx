@@ -8,6 +8,8 @@ import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
 import MedicalContentDock from "@/components/MedicalContentDock";
 import HereAssistantWidget from "@/components/HereAssistantWidget";
 import JsonLd from "@/components/JsonLd";
+import PWAProvider from "@/components/pwa/PWAProvider";
+import MobileAppDock from "@/components/navigation/MobileAppDock";
 import { SITE_URL, CLINIC } from "@/lib/clinic";
 
 const arabicFont = IBM_Plex_Sans_Arabic({
@@ -34,6 +36,18 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: "KAMALIA",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "KAMALIA",
+    statusBarStyle: "default",
+  },
+  formatDetection: { telephone: false },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }, { url: "/pwa/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/pwa/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   title: {
     default: `${CLINIC.name.ar} | ${CLINIC.name.en}`,
     template: `%s | ${CLINIC.name.ar}`,
@@ -76,6 +90,7 @@ export default function RootLayout({
       <body className={`${arabicFont.variable} ${englishFont.variable} antialiased`}>
         <JsonLd />
         <LanguageProvider>
+          <PWAProvider>
           <a
             href="#main"
             className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-3 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:shadow-soft"
@@ -88,6 +103,8 @@ export default function RootLayout({
           <WhatsAppFloatingButton />
           <MedicalContentDock />
           <HereAssistantWidget />
+          <MobileAppDock />
+          </PWAProvider>
         </LanguageProvider>
       </body>
     </html>

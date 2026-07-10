@@ -1,154 +1,107 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FormEvent, KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLang } from "@/lib/i18n";
-import { whatsappHref, telHref, CLINIC } from "@/lib/clinic";
+import { usePWAInstall } from "@/components/pwa/PWAProvider";
+import { isMedicalQuestion, isUrgentWording, matchIntent, rankQuestions } from "@/lib/chatbot/matchIntent";
+import { telHref } from "@/lib/clinic";
+import type { BilingualText, ChatAction, ChatMessage } from "@/types/chatbot";
 import Icon from "./Icon";
 
-type Bi = { ar: string; en: string };
-type Scenario = { id: string; q: Bi; a: Bi; wa: string };
-
-const SCENARIOS: Scenario[] = [
-  { id: "book", q: { ar: "أريد حجز موعد", en: "I want to book an appointment" },
-    a: { ar: "يسعدنا ذلك! يمكنك الحجز عبر نموذج الحجز في الموقع خطوة بخطوة، أو نكمل معك مباشرة عبر واتساب لتأكيد التفاصيل.",
-         en: "Happy to help! You can book step by step using the website form, or we can continue on WhatsApp to confirm the details." },
-    wa: "مرحباً، أرغب بحجز موعد في مركز الكمالية الطبي." },
-  { id: "home", q: { ar: "أريد زيارة منزلية", en: "I want a home visit" },
-    a: { ar: "نوفّر زيارات منزلية في مختلف مناطق عمّان. أخبرنا بالمنطقة والوقت المناسب ونكمل الترتيب عبر واتساب.",
-         en: "We offer home visits across Amman. Tell us your area and preferred time and we'll arrange it on WhatsApp." },
-    wa: "مرحباً، أرغب بزيارة منزلية. منطقتي هي:" },
-  { id: "where", q: { ar: "أين موقعكم؟", en: "Where are you located?" },
-    a: { ar: "نحن في الكمالية، باتجاه السلط، شارع الأميرة راية، أول مجمع على اليمين. يمكنك فتح الاتجاهات من صفحة التواصل.",
-         en: "We are in Al Kamalia, toward Al Salt, Princess Raya Street, first complex on the right. You can open directions from the contact page." },
-    wa: "مرحباً، أريد الاتجاهات إلى مركز الكمالية الطبي." },
-  { id: "insurance", q: { ar: "هل تقبلون التأمين؟", en: "Do you accept insurance?" },
-    a: { ar: "تواصل معنا باسم شركة التأمين وسنساعدك في التأكد من التغطية المتاحة.",
-         en: "Send us your insurance provider name on WhatsApp and we'll help confirm available coverage." },
-    wa: "مرحباً، هل تقبلون تأمين شركة:" },
-  { id: "consult", q: { ar: "أريد استشارة طبية", en: "I want a medical consultation" },
-    a: { ar: "يمكنك الحصول على استشارة طبية عامة عبر واتساب أو الهاتف. صف لنا حالتك بإيجاز ونوجّهك للخطوة المناسبة.",
-         en: "You can get a general medical consultation via WhatsApp or phone. Briefly describe your situation and we'll guide your next step." },
-    wa: "مرحباً، أرغب باستشارة طبية بخصوص:" },
-];
-
-type Msg = { from: "bot" | "user"; text: string; wa?: string };
+const STARTERS: Record<string, BilingualText[]> = {
+  "/services": [{ ar: "شو خدماتكم", en: "What services do you offer?" }, { ar: "زيارة منزلية", en: "I need a home visit" }, { ar: "بدي احجز", en: "Book an appointment" }],
+  "/health-journey": [{ ar: "بدي اسجل الضغط", en: "Open blood pressure log" }, { ar: "بدي اسجل السكر", en: "Track blood glucose" }, { ar: "كيف ارتب ادويتي", en: "Organize my medications" }, { ar: "بدي اجهز لزيارة الطبيب", en: "Prepare for my appointment" }],
+  "/daily-stories": [{ ar: "قصص يومية", en: "Show daily stories" }, { ar: "نصائح طبية", en: "Show medical tips" }, { ar: "بدي اجهز لزيارة الطبيب", en: "Prepare for my appointment" }],
+  "/medical-tips": [{ ar: "نصائح طبية", en: "Show medical tips" }, { ar: "شو رفيق صحتك", en: "What is Health Companion?" }, { ar: "بدي احجز", en: "Book an appointment" }],
+  "/booking": [{ ar: "كيف احجز موعد", en: "How do I book?" }, { ar: "رقم التلفون", en: "Phone number" }, { ar: "بدي اجهز لزيارة الطبيب", en: "Prepare for my appointment" }],
+  "/contact": [{ ar: "رقم التلفون", en: "Phone number" }, { ar: "واتساب", en: "Open WhatsApp" }, { ar: "وين العيادة", en: "Where is the clinic?" }],
+};
+const DEFAULT_STARTERS: BilingualText[] = [{ ar: "شو خدماتكم", en: "What services do you offer?" }, { ar: "بدي احجز", en: "Book an appointment" }, { ar: "شو رفيق صحتك", en: "What is Health Companion?" }, { ar: "كيف انزل التطبيق", en: "Install the app" }];
+const SESSION_KEY = "kamalia-guide-session-v1";
 
 export default function HereAssistantWidget() {
-  const { lang, t } = useLang();
+  const { lang, setLang, t } = useLang();
+  const { showInstall } = usePWAInstall();
+  const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
-  const [gateHidden, setGateHidden] = useState(pathname === "/");
-  const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [typing, setTyping] = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
-  const L = (b: Bi) => (lang === "ar" ? b.ar : b.en);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+  const panel = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const launcher = useRef<HTMLButtonElement>(null);
+  const listId = useId();
+  const suggestions = useMemo(() => rankQuestions(input, lang, pathname), [input, lang, pathname]);
+  const starters = STARTERS[pathname] ?? (pathname.startsWith("/health-journey") ? STARTERS["/health-journey"] : DEFAULT_STARTERS);
 
   useEffect(() => {
-    if (pathname !== "/") { setGateHidden(false); return; }
-    const compute = () => {
-      const attr = document.documentElement.getAttribute("data-home-section");
-      if (attr != null) setGateHidden(parseInt(attr, 10) < 1);
-      else setGateHidden(window.scrollY < window.innerHeight * 0.6);
-    };
-    compute();
-    window.addEventListener("scroll", compute, { passive: true });
-    window.addEventListener("home-section", compute as EventListener);
-    return () => {
-      window.removeEventListener("scroll", compute);
-      window.removeEventListener("home-section", compute as EventListener);
-    };
-  }, [pathname]);
+    try { const saved = sessionStorage.getItem(SESSION_KEY); if (saved) setMessages(JSON.parse(saved) as ChatMessage[]); } catch { /* Ignore unavailable session storage. */ }
+  }, []);
+  useEffect(() => { try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(messages)); } catch { /* Session persistence is optional. */ } }, [messages]);
+
+  const close = useCallback(() => {
+    setOpen(false); window.dispatchEvent(new CustomEvent("kamalia-guide-closed")); requestAnimationFrame(() => launcher.current?.focus());
+  }, []);
+  const openGuide = useCallback(() => {
+    setOpen(true); window.dispatchEvent(new CustomEvent("kamalia-guide-opened"));
+  }, []);
+  useEffect(() => { window.addEventListener("kamalia-guide-open", openGuide); return () => window.removeEventListener("kamalia-guide-open", openGuide); }, [openGuide]);
 
   useEffect(() => {
-    if (open && msgs.length === 0) {
-      setMsgs([{ from: "bot", text: t("مرحباً، أنا \"نحن هنا\". كيف أساعدك اليوم؟", "Hi, I'm \"We are here\". How can I help today?") }]);
+    if (!open) return;
+    const previous = document.body.style.overflow; document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => inputRef.current?.focus());
+    const focusable = () => Array.from(panel.current?.querySelectorAll<HTMLElement>('a,button:not([disabled]),input') ?? []);
+    const keydown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") { if (suggestions.length) { setInput(""); return; } close(); }
+      if (event.key === "Tab") { const items = focusable(); if (!items.length) return; const first = items[0], last = items[items.length - 1]; if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); } }
+    };
+    window.addEventListener("keydown", keydown);
+    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", keydown); };
+  }, [open, close, suggestions.length]);
+
+  const addGuide = (text: string, actions?: ChatAction[], followUps?: BilingualText[]) => setMessages((current) => [...current, { id: crypto.randomUUID(), from: "guide", text, actions, followUps }]);
+  const submitQuestion = (question: string) => {
+    const clean = question.trim(); if (!clean) return;
+    setMessages((current) => [...current, { id: crypto.randomUUID(), from: "user", text: clean }]);
+    setInput(""); setActiveSuggestion(-1);
+    if (isUrgentWording(clean)) {
+      addGuide(t("لا يجري دليل الكمالية فرزًا طبيًا. إذا كنت تحتاج مساعدة فورية، تواصل مع خدمات الطوارئ المحلية أو اتصل بالمركز. لا تؤخر طلب المساعدة بسبب هذا الدليل.", "KAMALIA Guide does not perform triage. If you need immediate help, contact local emergency services or call the center. Do not delay seeking help because of this Guide."), [{ label: { ar: "اتصل بالمركز", en: "Call center" }, href: telHref, kind: "external" }, { label: { ar: "معلومات الرعاية", en: "Care information" }, href: "/emergency", kind: "route" }]); return;
     }
-  }, [open, msgs.length, t]);
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [msgs, typing]);
-
-  const choose = (s: Scenario) => {
-    setMsgs((m) => [...m, { from: "user", text: L(s.q) }]);
-    setTyping(true);
-    setTimeout(() => {
-      setTyping(false);
-      setMsgs((m) => [...m, { from: "bot", text: L(s.a), wa: s.wa }]);
-    }, 1100);
+    const result = matchIntent(clean, lang, pathname);
+    if (result.intent && result.confidence >= 0.72) { addGuide(result.intent.response[lang], result.intent.actions, result.intent.followUps); return; }
+    if (isMedicalQuestion(clean)) { addGuide(t("لا يستطيع دليل الكمالية تشخيص الأعراض. يمكنك قراءة المحتوى التوعوي أو حجز موعد لمناقشة حالتك مع مختص.", "KAMALIA Guide cannot diagnose symptoms. You can browse educational content or book an appointment to discuss your concerns with a professional."), [{ label: { ar: "حجز موعد", en: "Book appointment" }, href: "/booking", kind: "route" }, { label: { ar: "محتوى توعوي", en: "Educational content" }, href: "/medical-tips", kind: "route" }, { label: { ar: "تواصل مع المركز", en: "Contact center" }, href: "/contact", kind: "route" }]); return; }
+    if (result.intent && result.confidence >= 0.48) {
+      const choices = [result.intent, ...result.alternatives].slice(0, 3);
+      addGuide(t("هل تقصد أحد هذه الخيارات؟", "Did you mean one of these options?"), undefined, choices.map((intent) => ({ ar: intent.aliases.ar[0], en: intent.aliases.en[0] }))); return;
+    }
+    addGuide(t("لم أجد إجابة مؤكدة لهذا السؤال، لكن قد تكون إحدى هذه الصفحات مفيدة.", "I couldn’t find a verified answer to that question, but one of these pages may help."), [{ label: { ar: "الخدمات", en: "Services" }, href: "/services", kind: "route" }, { label: { ar: "حجز موعد", en: "Booking" }, href: "/booking", kind: "route" }, { label: { ar: "تواصل معنا", en: "Contact" }, href: "/contact", kind: "route" }]);
   };
+  const onSubmit = (event: FormEvent) => { event.preventDefault(); submitQuestion(input); };
+  const onInputKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (!suggestions.length) return;
+    if (event.key === "ArrowDown") { event.preventDefault(); setActiveSuggestion((value) => (value + 1) % suggestions.length); }
+    else if (event.key === "ArrowUp") { event.preventDefault(); setActiveSuggestion((value) => (value <= 0 ? suggestions.length - 1 : value - 1)); }
+    else if (event.key === "Enter" && activeSuggestion >= 0) { event.preventDefault(); submitQuestion(suggestions[activeSuggestion][lang]); }
+    else if (event.key === "Escape") { event.preventDefault(); setInput(""); setActiveSuggestion(-1); }
+  };
+  const actionClick = (action: ChatAction) => {
+    if (action.kind === "install") showInstall();
+    if (action.kind === "language" && action.value) setLang(action.value);
+  };
+  const clear = () => { setMessages([]); sessionStorage.removeItem(SESSION_KEY); inputRef.current?.focus(); };
 
-  return (
-    <>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className={`group fixed bottom-5 ltr:right-5 rtl:left-5 z-40 flex items-center gap-2 rounded-full bg-navy-900 px-3.5 py-2.5 text-white shadow-float ring-1 ring-white/15 transition-all duration-300 hover:bg-navy-800 ${gateHidden && !open ? "pointer-events-none translate-y-4 opacity-0" : "opacity-100"}`}
-        aria-label={t("المساعد نحن هنا", "Assistant: We are here")}
-      >
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400/20">
-          <Icon name="headset" className="h-4 w-4 text-cyan-300" />
-        </span>
-        <span className="text-xs font-bold">{t("نحن هنا", "We are here")}</span>
-      </button>
-
-      {open && (
-        <div className="fixed bottom-20 ltr:right-5 rtl:left-5 z-50 flex max-h-[70vh] w-[min(92vw,360px)] flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-float animate-pop">
-          <div className="flex items-center justify-between bg-brand-600 px-4 py-3 text-white">
-            <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
-                <Icon name="heart-pulse" className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-sm font-bold leading-tight">{t("نحن هنا", "We are here")}</p>
-                <p className="text-[11px] text-brand-100">{CLINIC.name[lang]}</p>
-              </div>
-            </div>
-            <button onClick={() => setOpen(false)} aria-label={t("إغلاق", "Close")} className="text-white/90">✕</button>
-          </div>
-
-          <div className="flex-1 space-y-2 overflow-y-auto bg-cloud px-3 py-3 no-scrollbar">
-            {msgs.map((m, i) => (
-              <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.from === "user" ? "bg-brand-600 text-white" : "bg-white text-slate-700 shadow-sm"}`}>
-                  {m.text}
-                  {m.wa && (
-                    <a href={whatsappHref(m.wa)} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-[#1faf54] px-3 py-1.5 text-xs font-bold text-white">
-                      <Icon name="whatsapp" className="h-3.5 w-3.5" /> {t("أكمل عبر واتساب", "Continue on WhatsApp")}
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-            {typing && (
-              <div className="flex justify-start">
-                <div className="flex gap-1 rounded-2xl bg-white px-3 py-2.5 shadow-sm">
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-slate-300 [animation-delay:-0.2s]" />
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-slate-300 [animation-delay:-0.1s]" />
-                  <span className="h-2 w-2 animate-bounce rounded-full bg-slate-300" />
-                </div>
-              </div>
-            )}
-            <div ref={endRef} />
-          </div>
-
-          <div className="border-t border-slate-100 bg-white px-3 py-2">
-            <div className="flex flex-wrap gap-1.5">
-              {SCENARIOS.map((s) => (
-                <button key={s.id} onClick={() => choose(s)} className="rounded-full bg-brand-50 px-3 py-1.5 text-[11px] font-semibold text-brand-700 hover:bg-brand-100">
-                  {L(s.q)}
-                </button>
-              ))}
-            </div>
-            <div className="mt-2 flex gap-1.5">
-              <a href={telHref} className="flex-1 rounded-xl bg-rose-50 px-3 py-1.5 text-center text-[11px] font-bold text-rose-700">{t("اتصال", "Call")}</a>
-              <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="flex-1 rounded-xl bg-[#eafaf0] px-3 py-1.5 text-center text-[11px] font-bold text-[#1faf54]">WhatsApp</a>
-            </div>
-            <p className="mt-2 text-center text-[10px] leading-snug text-slate-400">
-              {t("هذا المساعد للمعلومات العامة فقط ولا يغني عن مراجعة الطبيب.", "This assistant is for general information only and does not replace medical consultation.")}
-            </p>
-          </div>
-        </div>
-      )}
-    </>
-  );
+  return <>
+    <button ref={launcher} type="button" onClick={openGuide} aria-haspopup="dialog" aria-label={t("فتح دليل الكمالية", "Open KAMALIA Guide")} className="fixed bottom-5 z-40 hidden items-center gap-2 rounded-full bg-navy-900 px-4 py-3 text-white shadow-float transition hover:bg-navy-800 lg:flex ltr:right-5 rtl:left-5"><Icon name="navigation" className="h-5 w-5 text-cyan-300" /><span className="text-sm font-bold">{t("دليل الكمالية", "KAMALIA Guide")}</span></button>
+    {open && createPortal(<div className="fixed inset-0 z-[1100] flex items-end justify-center bg-navy-950/50 lg:items-center lg:p-5" onMouseDown={(event) => event.target === event.currentTarget && close()}><div ref={panel} role="dialog" aria-modal="true" aria-labelledby="guide-title" className="flex h-[min(92dvh,760px)] w-full flex-col overflow-hidden rounded-t-[2rem] bg-cloud shadow-float sm:max-w-2xl lg:rounded-[2rem]">
+      <header className="flex items-center justify-between gap-3 border-b border-navy-100 bg-white px-4 pb-3 pt-[max(.75rem,env(safe-area-inset-top,0px))] sm:px-5"><div className="min-w-0"><h2 id="guide-title" className="font-bold text-navy-900">{t("دليل الكمالية", "KAMALIA Guide")}</h2><p className="truncate text-xs text-navy-500">{t("دليلك السريع للخدمات والمواعيد والأدوات", "Your quick guide to services, appointments, and tools")}</p></div><div className="flex items-center gap-1"><button type="button" onClick={clear} className="min-h-11 rounded-full px-3 text-xs font-semibold text-navy-600 hover:bg-navy-50">{t("مسح المحادثة", "Clear")}</button><button type="button" onClick={close} aria-label={t("إغلاق", "Close")} className="flex h-11 w-11 items-center justify-center rounded-full text-navy-700 hover:bg-navy-50"><Icon name="close" /></button></div></header>
+      <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-5" aria-live="polite">
+        {messages.length === 0 ? <div className="mx-auto max-w-xl"><span className="icon-pad h-12 w-12"><Icon name="navigation" className="h-6 w-6" /></span><h3 className="mt-4 text-xl font-bold text-navy-900">{t("كيف يمكنني مساعدتك؟", "How can I help?")}</h3><p className="mt-2 text-sm leading-6 text-navy-600">{t("دليل الكمالية يساعدك في الوصول إلى المعلومات والصفحات، ولا يقدم تشخيصًا طبيًا.", "KAMALIA Guide helps you find information and pages. It does not provide medical diagnosis.")}</p><div className="mt-5 grid gap-2 sm:grid-cols-2">{starters.slice(0, 6).map((starter) => <button key={starter.en} type="button" onClick={() => submitQuestion(starter[lang])} className="min-h-12 rounded-2xl border border-navy-100 bg-white px-4 py-3 text-start text-sm font-semibold text-navy-700 shadow-xs transition hover:border-brand-200 hover:text-brand-700">{starter[lang]}</button>)}</div></div> : <div className="space-y-4">{messages.map((message) => <div key={message.id} className={`flex ${message.from === "user" ? "justify-end" : "justify-start"}`}><div className={`max-w-[88%] ${message.from === "user" ? "rounded-2xl rounded-ee-md bg-brand-600 px-4 py-2.5 text-white" : "text-navy-700"}`}><p className="text-sm leading-7">{message.text}</p>{message.actions && <div className="mt-3 flex flex-wrap gap-2">{message.actions.map((action, index) => action.href ? (action.kind === "external" ? <a key={index} href={action.href} target="_blank" rel="noopener noreferrer" className="btn-ghost min-h-11 px-4 text-xs">{action.label[lang]}</a> : <Link key={index} href={action.href} onClick={close} className="btn-ghost min-h-11 px-4 text-xs">{action.label[lang]}</Link>) : <button key={index} type="button" onClick={() => actionClick(action)} className="btn-ghost min-h-11 px-4 text-xs">{action.label[lang]}</button>)}</div>}{message.followUps && <div className="mt-3 flex flex-wrap gap-2">{message.followUps.map((reply) => <button key={reply.en} type="button" onClick={() => submitQuestion(reply[lang])} className="min-h-11 rounded-full bg-brand-50 px-4 text-xs font-semibold text-brand-700">{reply[lang]}</button>)}</div>}</div></div>)}</div>}
+      </div>
+      <form onSubmit={onSubmit} className="relative border-t border-navy-100 bg-white px-3 pb-[max(.75rem,env(safe-area-inset-bottom,0px))] pt-3 sm:px-5"><label htmlFor="guide-input" className="sr-only">{t("اكتب سؤالك", "Type your question")}</label>{suggestions.length > 0 && <div id={listId} role="listbox" className="absolute inset-x-3 bottom-full mb-2 max-h-64 overflow-y-auto rounded-2xl border border-navy-100 bg-white p-1.5 shadow-float sm:inset-x-5"><p className="sr-only" aria-live="polite">{t(`${suggestions.length} اقتراحات`, `${suggestions.length} suggestions`)}</p>{suggestions.map((suggestion, index) => <button id={`${listId}-${index}`} key={suggestion.intent.id} type="button" role="option" aria-selected={index === activeSuggestion} onMouseDown={(event) => event.preventDefault()} onClick={() => submitQuestion(suggestion[lang])} className={`flex min-h-12 w-full items-center justify-between gap-3 rounded-xl px-3 text-start text-sm ${index === activeSuggestion ? "bg-brand-50 text-brand-700" : "text-navy-700 hover:bg-navy-50"}`}><span>{suggestion[lang]}</span><span className="text-[10px] text-navy-400">{suggestion.intent.category}</span></button>)}</div>}<div className="flex items-center gap-2 rounded-2xl border border-navy-200 bg-cloud p-1.5 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100"><input ref={inputRef} id="guide-input" value={input} onChange={(event) => { setInput(event.target.value); setActiveSuggestion(-1); }} onKeyDown={onInputKeyDown} role="combobox" aria-autocomplete="list" aria-expanded={suggestions.length > 0} aria-controls={suggestions.length ? listId : undefined} aria-activedescendant={activeSuggestion >= 0 ? `${listId}-${activeSuggestion}` : undefined} autoComplete="off" placeholder={t("اسأل عن خدمة أو صفحة...", "Ask about a service or page...")} className="h-11 min-w-0 flex-1 bg-transparent px-3 text-base text-navy-900 outline-none placeholder:text-navy-400" /><button type="submit" disabled={!input.trim()} aria-label={t("إرسال", "Send")} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white disabled:cursor-not-allowed disabled:opacity-45"><Icon name="send" className="h-5 w-5 rtl:rotate-180" /></button></div><p className="mt-2 text-center text-[10px] leading-4 text-navy-400">{t("المحادثة محلية في هذه الجلسة ولا تُرسل إلى المركز.", "This conversation stays local to this session and is not sent to the center.")}</p></form>
+    </div></div>, document.body)}
+  </>;
 }

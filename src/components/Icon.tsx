@@ -6,7 +6,7 @@ import {
   Users, User, ChevronRight, Microscope, Syringe, Video, Quote, Plus, Headset,
   Globe, Award, BedDouble, Facebook, Instagram, Send, X, Menu, MapPinned, Brain, Smile,
   Pencil, Trash2, Upload, FileText, ClipboardList, Pill, Printer, Save, RotateCcw, CircleHelp,
-  type LucideIcon,
+  WifiOff, RefreshCw, MoreHorizontal, Smartphone, BookOpen, Navigation, type LucideIcon,
 } from "lucide-react";
 
 type Props = { name: string; className?: string };
@@ -23,6 +23,8 @@ const map: Record<string, LucideIcon> = {
   globe: Globe, award: Award, bed: BedDouble, facebook: Facebook, instagram: Instagram, send: Send, close: X, menu: Menu, directions: MapPinned, brain: Brain, smile: Smile,
   pencil: Pencil, trash: Trash2, upload: Upload, "file-text": FileText,
   clipboard: ClipboardList, pill: Pill, printer: Printer, save: Save, restore: RotateCcw,
+  "wifi-off": WifiOff, refresh: RefreshCw, more: MoreHorizontal, smartphone: Smartphone,
+  book: BookOpen, navigation: Navigation,
 };
 
 export default function Icon({ name, className = "h-5 w-5" }: Props) {
