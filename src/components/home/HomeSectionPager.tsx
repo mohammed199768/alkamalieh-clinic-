@@ -4,6 +4,46 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 const LOCK_MS = 950;
 const WHEEL_THRESHOLD = 18;
 const SWIPE_THRESHOLD = 50;
+const INTERACTIVE_SELECTOR = [
+  "a[href]",
+  "button",
+  "input",
+  "textarea",
+  "select",
+  "video",
+  "audio",
+  "iframe",
+  '[role="dialog"]',
+  '[role="menu"]',
+  '[contenteditable="true"]',
+].join(",");
+
+function isInteractiveTarget(target: EventTarget | null) {
+  return target instanceof Element && Boolean(target.closest(INTERACTIVE_SELECTOR));
+}
+
+function canScrollVertically(target: EventTarget | null, boundary: HTMLElement, deltaY: number) {
+  let element = target instanceof Element ? target : null;
+
+  while (element && boundary.contains(element)) {
+    if (element instanceof HTMLElement) {
+      const { overflowY } = window.getComputedStyle(element);
+      const isScrollable =
+        /(auto|scroll|overlay)/.test(overflowY) && element.scrollHeight > element.clientHeight + 1;
+
+      if (isScrollable) {
+        const atTop = element.scrollTop <= 0;
+        const atBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 1;
+        if ((deltaY > 0 && !atBottom) || (deltaY < 0 && !atTop)) return true;
+      }
+    }
+
+    if (element === boundary) break;
+    element = element.parentElement;
+  }
+
+  return false;
+}
 
 /**
  * Full-page section pager (homepage only, lg desktop and above).
@@ -15,7 +55,10 @@ const SWIPE_THRESHOLD = 50;
 export default function HomeSectionPager({ panels }: { panels: React.ReactNode[] }) {
   const count = panels.length;
   const [active, setActive] = useState(0);
+  const activeRef = useRef(0);
   const lockedRef = useRef(false);
+  const unlockTimerRef = useRef<number | null>(null);
+  const pagerRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const touchStartY = useRef<number | null>(null);
 
@@ -24,34 +67,43 @@ export default function HomeSectionPager({ panels }: { panels: React.ReactNode[]
     window.dispatchEvent(new CustomEvent("home-section", { detail: i }));
   }, []);
 
+  const lockPager = useCallback(() => {
+    lockedRef.current = true;
+    if (unlockTimerRef.current !== null) window.clearTimeout(unlockTimerRef.current);
+    unlockTimerRef.current = window.setTimeout(() => {
+      lockedRef.current = false;
+      unlockTimerRef.current = null;
+    }, LOCK_MS);
+  }, []);
+
   const go = useCallback(
     (dir: number) => {
-      setActive((prev) => {
-        const next = Math.min(count - 1, Math.max(0, prev + dir));
-        if (next !== prev) {
-          lockedRef.current = true;
-          window.setTimeout(() => (lockedRef.current = false), LOCK_MS);
-          broadcast(next);
-        }
-        return next;
-      });
+      const prev = activeRef.current;
+      const next = Math.min(count - 1, Math.max(0, prev + dir));
+      if (next === prev) return false;
+
+      activeRef.current = next;
+      lockPager();
+      setActive(next);
+      broadcast(next);
+      return true;
     },
-    [count, broadcast]
+    [count, broadcast, lockPager]
   );
 
   const goTo = useCallback(
     (i: number) => {
-      setActive((prev) => {
-        const next = Math.min(count - 1, Math.max(0, i));
-        if (next !== prev) {
-          lockedRef.current = true;
-          window.setTimeout(() => (lockedRef.current = false), LOCK_MS);
-          broadcast(next);
-        }
-        return next;
-      });
+      const prev = activeRef.current;
+      const next = Math.min(count - 1, Math.max(0, i));
+      if (next === prev) return false;
+
+      activeRef.current = next;
+      lockPager();
+      setActive(next);
+      broadcast(next);
+      return true;
     },
-    [count, broadcast]
+    [count, broadcast, lockPager]
   );
 
   // lock body scroll + init broadcast
@@ -65,42 +117,50 @@ export default function HomeSectionPager({ panels }: { panels: React.ReactNode[]
       document.body.style.overflow = prevBody;
       document.documentElement.style.overflow = prevHtml;
       document.documentElement.removeAttribute("data-home-section");
+      if (unlockTimerRef.current !== null) window.clearTimeout(unlockTimerRef.current);
     };
   }, [broadcast]);
 
-  // wheel — respect inner scroll, then page at boundaries
-  const onWheel = useCallback(
-    (e: React.WheelEvent) => {
+  // React delegates wheel events passively. This scoped native listener is the
+  // one interaction that needs to cancel a wheel when the pager consumes it.
+  useEffect(() => {
+    const pager = pagerRef.current;
+    if (!pager) return;
+
+    const onWheel = (e: WheelEvent) => {
       const dy = e.deltaY;
-      if (Math.abs(dy) < WHEEL_THRESHOLD) return;
-      const panel = panelRefs.current[active];
-      if (panel && panel.scrollHeight > panel.clientHeight + 1) {
-        const atTop = panel.scrollTop <= 0;
-        const atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
-        if (dy > 0 && !atBottom) return; // allow native scroll down inside panel
-        if (dy < 0 && !atTop) return; // allow native scroll up inside panel
-      }
-      e.preventDefault();
-      if (lockedRef.current) return;
-      go(dy > 0 ? 1 : -1);
-    },
-    [active, go]
-  );
+      if (
+        e.defaultPrevented
+        || e.ctrlKey
+        || Math.abs(dy) < WHEEL_THRESHOLD
+        || Math.abs(e.deltaX) > Math.abs(dy)
+        || isInteractiveTarget(e.target)
+        || lockedRef.current
+      ) return;
+
+      const panel = panelRefs.current[activeRef.current];
+      if (!panel || canScrollVertically(e.target, panel, dy)) return;
+
+      if (go(dy > 0 ? 1 : -1) && e.cancelable) e.preventDefault();
+    };
+
+    pager.addEventListener("wheel", onWheel, { passive: false });
+    return () => pager.removeEventListener("wheel", onWheel);
+  }, [go]);
 
   const onTouchStart = (e: React.TouchEvent) => {
+    if (isInteractiveTarget(e.target)) {
+      touchStartY.current = null;
+      return;
+    }
     touchStartY.current = e.touches[0].clientY;
   };
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchStartY.current == null) return;
     const dy = touchStartY.current - e.changedTouches[0].clientY;
     touchStartY.current = null;
-    const panel = panelRefs.current[active];
-    if (panel && panel.scrollHeight > panel.clientHeight + 1) {
-      const atTop = panel.scrollTop <= 0;
-      const atBottom = panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 1;
-      if (dy > 0 && !atBottom) return;
-      if (dy < 0 && !atTop) return;
-    }
+    const panel = panelRefs.current[activeRef.current];
+    if (panel && canScrollVertically(e.target, panel, dy)) return;
     if (Math.abs(dy) < SWIPE_THRESHOLD || lockedRef.current) return;
     go(dy > 0 ? 1 : -1);
   };
@@ -108,12 +168,11 @@ export default function HomeSectionPager({ panels }: { panels: React.ReactNode[]
   // keyboard
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
-      if (["ArrowDown", "PageDown"].includes(e.key)) { e.preventDefault(); go(1); }
-      else if (["ArrowUp", "PageUp"].includes(e.key)) { e.preventDefault(); go(-1); }
-      else if (e.key === "Home") { e.preventDefault(); goTo(0); }
-      else if (e.key === "End") { e.preventDefault(); goTo(count - 1); }
+      if (e.defaultPrevented || isInteractiveTarget(e.target)) return;
+      if (["ArrowDown", "PageDown"].includes(e.key) && go(1)) e.preventDefault();
+      else if (["ArrowUp", "PageUp"].includes(e.key) && go(-1)) e.preventDefault();
+      else if (e.key === "Home" && goTo(0)) e.preventDefault();
+      else if (e.key === "End" && goTo(count - 1)) e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -121,9 +180,9 @@ export default function HomeSectionPager({ panels }: { panels: React.ReactNode[]
 
   return (
     <div
+      ref={pagerRef}
       className="relative overflow-hidden"
       style={{ height: "calc(100svh - 4rem)" }}
-      onWheel={onWheel}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { IBM_Plex_Sans_Arabic, Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import SiteHeader from "@/components/SiteHeader";
@@ -8,6 +9,22 @@ import MedicalContentDock from "@/components/MedicalContentDock";
 import HereAssistantWidget from "@/components/HereAssistantWidget";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, CLINIC } from "@/lib/clinic";
+
+const arabicFont = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-ar",
+  fallback: ["Tahoma", "Arial", "sans-serif"],
+});
+
+const englishFont = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-en",
+  fallback: ["Arial", "sans-serif"],
+});
 
 export const viewport: Viewport = {
   themeColor: "#1c61d4",
@@ -56,15 +73,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased">
+      <body className={`${arabicFont.variable} ${englishFont.variable} antialiased`}>
         <JsonLd />
         <LanguageProvider>
           <a
