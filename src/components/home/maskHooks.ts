@@ -1,82 +1,11 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-export type MaskPosition = { x: number; y: number; sw: number; sh: number };
-
-/** Tracks the (max-width: 767px) media query. SSR-safe (defaults to false). */
-export function useIsMobile(): boolean {
-  const [mobile, setMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  return mobile;
-}
-
-export type ImageSize = { w: number; h: number };
-
-/** Loads the image once and returns its natural dimensions. */
-export function useImageSize(src: string): ImageSize {
-  const [size, setSize] = useState<ImageSize>({ w: 0, h: 0 });
-  useEffect(() => {
-    if (!src) return;
-    const img = new Image();
-    img.onload = () => setSize({ w: img.naturalWidth, h: img.naturalHeight });
-    img.src = src;
-  }, [src]);
-  return size;
-}
-
-/**
- * Computes each card's window into the shared section image.
- * Re-measures on ResizeObserver + window resize + provided deps.
- */
-export function useMaskPositions(
-  sectionRef: React.RefObject<HTMLElement | null>,
-  cardRefs: React.MutableRefObject<(HTMLElement | null)[]>,
-  deps: unknown[] = []
-): { positions: MaskPosition[]; height: number } {
-  const [positions, setPositions] = useState<MaskPosition[]>([]);
-  const [height, setHeight] = useState(0);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const compute = () => {
-      const sr = section.getBoundingClientRect();
-      const sw = sr.width;
-      const sh = sr.height;
-      setHeight(sh);
-      setPositions(
-        cardRefs.current.map((el) => {
-          if (!el) return { x: 0, y: 0, sw, sh };
-          const r = el.getBoundingClientRect();
-          return { x: r.left - sr.left, y: r.top - sr.top, sw, sh };
-        })
-      );
-    };
-    compute();
-    const ro = new ResizeObserver(compute);
-    ro.observe(section);
-    cardRefs.current.forEach((el) => el && ro.observe(el));
-    window.addEventListener("resize", compute);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", compute);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sectionRef, cardRefs, ...deps]);
-
-  return { positions, height };
-}
-
 /**
  * Section reveal via IntersectionObserver. Lightly REPLAYS: becomes active when
  * ~enterRatio of the section is visible, and resets once it has mostly left, so
  * scrolling back up re-triggers the staggered entrance (no constant flicker).
+ * Transform/opacity only; disabled under reduced motion.
  */
 export function useStaggeredReveal(enterRatio = 0.4) {
   const containerRef = useRef<HTMLElement | null>(null);

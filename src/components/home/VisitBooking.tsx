@@ -49,8 +49,8 @@ export default function VisitBooking() {
           {/* two image cards */}
           <div className="flex min-h-[140px] flex-1 gap-1.5 md:gap-2" style={getAnimStyle(1)}>
             {[
-              { src: HOME_MEDIA.homeVisit, ar: "زيارة منزلية", en: "Home visit" },
-              { src: HOME_MEDIA.lab, ar: "فحوصات مخبرية", en: "Lab testing" },
+              { src: HOME_MEDIA.corridor, ar: "الممر ومناطق العلاج", en: "Corridor & care areas" },
+              { src: HOME_MEDIA.room, ar: "غرفة علاج مجهزة", en: "Equipped treatment room" },
             ].map((im, i) => (
               <div key={i} className="relative flex-1 overflow-hidden rounded-xl md:rounded-2xl">
                 <Image src={im.src} alt={lang === "ar" ? im.ar : im.en} fill sizes="25vw" className="object-cover" />

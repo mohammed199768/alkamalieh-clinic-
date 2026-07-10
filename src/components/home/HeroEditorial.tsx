@@ -78,7 +78,7 @@ export default function HeroEditorial() {
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] border border-white/60 shadow-float sm:aspect-[5/4] lg:aspect-auto lg:h-[clamp(420px,62vh,640px)]">
             <Image
               src={HOME_MEDIA.hero}
-              alt={t("رعاية طبية في مركز الكمالية الطبي", "Medical care at Al Kamalia Medical Center")}
+              alt={t("قاعة استقبال مضيئة وواسعة في مركز الكمالية الطبي", "A bright, spacious reception hall at Al Kamalia Medical Center")}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"

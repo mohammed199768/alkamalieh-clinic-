@@ -4,6 +4,7 @@ import { LanguageProvider } from "@/lib/i18n";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
+import MedicalContentDock from "@/components/MedicalContentDock";
 import HereAssistantWidget from "@/components/HereAssistantWidget";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, CLINIC } from "@/lib/clinic";
@@ -76,6 +77,7 @@ export default function RootLayout({
           <main id="main" className="pt-16 lg:pt-0">{children}</main>
           <SiteFooter />
           <WhatsAppFloatingButton />
+          <MedicalContentDock />
           <HereAssistantWidget />
         </LanguageProvider>
       </body>

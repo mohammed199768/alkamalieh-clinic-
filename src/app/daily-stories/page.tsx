@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import DailyStoriesView from "@/components/views/DailyStoriesView";
 
+const DESCRIPTION =
+  "قصص إنسانية وتوعوية مستوحاة من تفاصيل الحياة اليومية من مركز الكمالية الطبي — لأغراض تثقيفية عامة. Educational everyday-care stories from KAMALIA Medical Center.";
+
 export const metadata: Metadata = {
-  title: "قصص من يومنا | Daily Stories",
-  description: "قصص إنسانية من يوميات مركز الكمالية الطبي تعكس رعايتنا واهتمامنا بكل مريض.",
+  title: "قصص من تفاصيل يومنا | Daily Stories",
+  description: DESCRIPTION,
   alternates: { canonical: "/daily-stories" },
-  openGraph: { title: "قصص من يومنا | Daily Stories", description: "قصص إنسانية من يوميات مركز الكمالية الطبي تعكس رعايتنا واهتمامنا بكل مريض.", url: "/daily-stories" },
+  openGraph: { title: "قصص من تفاصيل يومنا | Daily Stories", description: DESCRIPTION, url: "/daily-stories" },
 };
 
 export default function Page() {

@@ -37,6 +37,8 @@
   "exclude": [
     "node_modules",
     "rpm-iq-exam-master",
-    "Assessment_test_quiz-App-main"
+    "Assessment_test_quiz-App-main",
+    "clinic-landing-next",
+    "clinic-landing-next/**/*"
   ]
 }

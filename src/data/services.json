@@ -16,6 +16,22 @@
     }
   },
   {
+    "id": "dentistry",
+    "icon": "smile",
+    "title": {
+      "ar": "طب الأسنان",
+      "en": "Dentistry"
+    },
+    "short": {
+      "ar": "يبدأ بالفحص والتقييم الواضح.",
+      "en": "Begins with a clear assessment."
+    },
+    "desc": {
+      "ar": "رعاية أسنان تبدأ بالفحص والتقييم الواضح، مع توجيه المراجع إلى خطة المتابعة المناسبة لحالته.",
+      "en": "Dental care that begins with a clear assessment and guides the patient toward an appropriate follow-up plan."
+    }
+  },
+  {
     "id": "children-care",
     "icon": "baby",
     "title": {

@@ -4,18 +4,17 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLang } from "@/lib/i18n";
-import { CLINIC, whatsappHref } from "@/lib/clinic";
+import { whatsappHref } from "@/lib/clinic";
 import BrandMark from "./BrandMark";
 import LanguageToggle from "./LanguageToggle";
 import Icon from "./Icon";
 
 type Item = { ar: string; en: string; href: string; icon: string; external?: boolean };
-type Group = { ar: string; en: string; href?: string; items?: Item[] };
+type Group = { ar: string; en: string; href?: string; items?: Item[]; match?: string[] };
 
 const MAIN: Item[] = [
   { ar: "الرئيسية", en: "Home", href: "/", icon: "home" },
   { ar: "الخدمات", en: "Services", href: "/services", icon: "stethoscope" },
-  { ar: "احجز الآن", en: "Book Now", href: "/booking", icon: "calendar" },
   { ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" },
 ];
 
@@ -50,20 +49,13 @@ const KNOW_YOURSELF: Item[] = [
   { ar: "اختبار الذكاء المنطقي", en: "Logical Intelligence Test", href: "/know-yourself/iq-test", icon: "activity" },
 ];
 
-const CONTACT: Item[] = [
-  { ar: "واتساب", en: "WhatsApp", href: whatsappHref(), icon: "whatsapp", external: true },
-  { ar: "فيسبوك", en: "Facebook", href: CLINIC.facebook, icon: "facebook", external: true },
-  { ar: "الموقع والاتجاهات", en: "Location & directions", href: CLINIC.maps, icon: "directions", external: true },
-];
-
 const GROUPS: Group[] = [
   { ar: "الرئيسية", en: "Home", href: "/" },
-  { ar: "الخدمات", en: "Services", items: SERVICES },
-  { ar: "احجز الآن", en: "Booking", href: "/booking" },
-  { ar: "المحتوى الطبي", en: "Medical Content", items: CONTENT },
+  { ar: "الخدمات", en: "Services", href: "/services" },
+  { ar: "المحتوى الطبي", en: "Medical Content", href: "/medical-minute", match: ["/medical-tips", "/daily-stories", "/videos", "/faq"] },
   { ar: "العائلة والأطفال", en: "Family & Kids", items: KIDS },
   { ar: "اعرف نفسك", en: "Know Yourself", href: "/know-yourself" },
-  { ar: "تواصل معنا", en: "Contact", items: [{ ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" }, ...CONTACT] },
+  { ar: "تواصل معنا", en: "Contact Us", href: "/contact" },
 ];
 
 export default function SiteHeader() {
@@ -78,7 +70,8 @@ export default function SiteHeader() {
   }, [pathname]);
 
   const groupActive = (g: Group) =>
-    (g.href && pathname === g.href) || (g.items?.some((i) => !i.external && i.href.split("#")[0] === pathname) ?? false);
+    (g.href && (pathname === g.href || (g.match?.includes(pathname ?? "") ?? false))) ||
+    (g.items?.some((i) => !i.external && i.href.split("#")[0] === pathname) ?? false);
 
   return (
     <header className="fixed inset-x-0 top-0 z-[500] h-16 max-w-full border-b border-white/60 bg-white/80 backdrop-blur-2xl lg:sticky">
@@ -95,6 +88,7 @@ export default function SiteHeader() {
               <Link
                 key={i}
                 href={g.href!}
+                aria-current={groupActive(g) ? "page" : undefined}
                 className={`relative rounded-full px-2.5 py-2 text-xs font-semibold transition xl:px-3.5 xl:text-sm ${
                   groupActive(g) ? "text-brand-700" : "text-navy-600 hover:text-navy-900"
                 }`}
@@ -106,7 +100,7 @@ export default function SiteHeader() {
           )}
         </nav>
 
-        <div className="hidden items-center gap-2.5 xl:flex">
+        <div className="hidden items-center gap-2.5 lg:flex">
           <LanguageToggle />
           <Link href="/booking" className="btn-primary">
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
