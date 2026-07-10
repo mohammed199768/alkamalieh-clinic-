@@ -68,7 +68,7 @@ export default function KidsRewardFlow({
             disabled={!name.trim() || submitting}
             className="btn-primary w-full disabled:opacity-40"
           >
-            <Icon name="star" className="h-5 w-5" />{" "}
+            <Icon name="award" className="h-5 w-5" />{" "}
             {submitting ? t("جارٍ الإرسال…", "Sending…") : t("احصل على البطاقة", "Get my card")}
           </button>
           <p className="text-xs text-navy-400">

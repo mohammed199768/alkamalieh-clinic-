@@ -65,7 +65,7 @@ export default function BrainChallengeView() {
         en="Fun Brain Challenge"
         subAr="جولات مرحة تدرّب الذاكرة والتركيز والمنطق."
         subEn="Playful rounds that train memory, focus and logic."
-        object="star"
+        object="shield"
       />
 
       {phase === "intro" && (

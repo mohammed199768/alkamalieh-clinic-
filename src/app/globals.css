@@ -48,7 +48,7 @@ html[lang="en"] body { font-family: var(--font-en), system-ui, sans-serif; }
 
   /* ---------- buttons (refined, not bulky) ---------- */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold leading-none transition-all duration-200 active:scale-[0.985] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold leading-none transition-all duration-200 active:scale-[0.985] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2;
   }
   .btn-primary {
     @apply btn bg-brand-600 text-white shadow-soft hover:bg-brand-700 hover:shadow-glow;
@@ -174,4 +174,28 @@ html[lang="en"] body { font-family: var(--font-en), system-ui, sans-serif; }
   .logo-pulse-line path {
     stroke-dashoffset: 0 !important;
   }
+}
+
+.print-only { display: none; }
+
+@media print {
+  @page { margin: 12mm; size: A4; }
+  html, body { background: #fff !important; color: #0d1a30 !important; }
+  body { background-image: none !important; }
+  body:has(.health-print) > header,
+  body:has(.health-print) > footer,
+  body:has(.health-print) [aria-label="Medical Content"],
+  body:has(.health-print) [aria-label="المحتوى الطبي"],
+  body:has(.health-print) .fixed,
+  .health-print .screen-only,
+  .health-print .no-print { display: none !important; }
+  .health-print .print-only { display: block !important; }
+  .health-print { min-height: auto !important; background: #fff !important; }
+  .health-print .print-area { width: 100%; max-width: none; padding: 0; margin: 0; }
+  .health-print table { width: 100%; border-collapse: collapse; page-break-inside: auto; }
+  .health-print tr { page-break-inside: avoid; page-break-after: auto; }
+  .health-print thead { display: table-header-group; }
+  .health-print section { break-inside: avoid; }
+  main { padding-top: 0 !important; overflow: visible !important; }
+  a[href]::after { content: none !important; }
 }

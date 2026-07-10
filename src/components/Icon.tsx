@@ -1,10 +1,12 @@
 import React from "react";
 import {
   Siren, Stethoscope, Baby, HeartPulse, Home, FlaskConical, Droplet, Scissors,
-  MessageCircle, ShieldCheck, Phone, Clock, MapPin, Mail, Star, Check, ArrowRight,
-  Play, Search, Music, Download, Sparkles, Activity, TestTube, Ambulance, Calendar,
+  MessageCircle, ShieldCheck, Phone, Clock, MapPin, Mail, Check, ArrowRight,
+  Play, Search, Music, Download, Activity, TestTube, Ambulance, Calendar,
   Users, User, ChevronRight, Microscope, Syringe, Video, Quote, Plus, Headset,
-  Globe, Award, BedDouble, Facebook, Instagram, Send, X, Menu, MapPinned, Brain, Smile, type LucideIcon,
+  Globe, Award, BedDouble, Facebook, Instagram, Send, X, Menu, MapPinned, Brain, Smile,
+  Pencil, Trash2, Upload, FileText, ClipboardList, Pill, Printer, Save, RotateCcw, CircleHelp,
+  type LucideIcon,
 } from "lucide-react";
 
 type Props = { name: string; className?: string };
@@ -13,12 +15,14 @@ const map: Record<string, LucideIcon> = {
   siren: Siren, stethoscope: Stethoscope, baby: Baby, "heart-pulse": HeartPulse,
   home: Home, flask: FlaskConical, droplet: Droplet, scissors: Scissors,
   message: MessageCircle, shield: ShieldCheck, shield2: ShieldCheck, phone: Phone,
-  clock: Clock, pin: MapPin, mail: Mail, star: Star, check: Check, arrow: ArrowRight,
-  play: Play, search: Search, music: Music, download: Download, sparkle: Sparkles,
+  clock: Clock, pin: MapPin, mail: Mail, check: Check, arrow: ArrowRight,
+  play: Play, search: Search, music: Music, download: Download,
   activity: Activity, vial: TestTube, ambulance: Ambulance, calendar: Calendar,
   users: Users, user: User, chevron: ChevronRight, microscope: Microscope,
   syringe: Syringe, video: Video, quote: Quote, plus: Plus, headset: Headset,
   globe: Globe, award: Award, bed: BedDouble, facebook: Facebook, instagram: Instagram, send: Send, close: X, menu: Menu, directions: MapPinned, brain: Brain, smile: Smile,
+  pencil: Pencil, trash: Trash2, upload: Upload, "file-text": FileText,
+  clipboard: ClipboardList, pill: Pill, printer: Printer, save: Save, restore: RotateCcw,
 };
 
 export default function Icon({ name, className = "h-5 w-5" }: Props) {
@@ -29,6 +33,6 @@ export default function Icon({ name, className = "h-5 w-5" }: Props) {
       </svg>
     );
   }
-  const Cmp = map[name] ?? Sparkles;
+  const Cmp = map[name] ?? CircleHelp;
   return <Cmp className={className} strokeWidth={1.75} aria-hidden="true" />;
 }

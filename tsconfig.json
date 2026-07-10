@@ -39,6 +39,12 @@
     "rpm-iq-exam-master",
     "Assessment_test_quiz-App-main",
     "clinic-landing-next",
-    "clinic-landing-next/**/*"
+    "clinic-landing-next/**/*",
+    "HealthLog-main",
+    "HealthLog-main/**/*",
+    "schemas-main",
+    "schemas-main/**/*",
+    "OMH-on-FHIR-master",
+    "OMH-on-FHIR-master/**/*"
   ]
 }

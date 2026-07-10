@@ -33,7 +33,7 @@ export default function IqResultCard({
       value: lang === "ar" ? result.tier.focusLevel.ar : result.tier.focusLevel.en,
     },
     {
-      icon: "sparkle",
+      icon: "brain",
       label: t("نمط حل المشكلات", "Problem-Solving Style"),
       value:
         lang === "ar" ? result.tier.problemSolvingStyle.ar : result.tier.problemSolvingStyle.en,

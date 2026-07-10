@@ -10,6 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/kids/brain-challenge", "/kids/pattern-puzzle", "/kids/spot-difference",
     "/kids/shape-sequence", "/kids/focus-lab", "/kids/healthy-maze", "/kids/color-match",
     "/bedtime-stories", "/contact", "/faq", "/privacy",
+    "/health-journey", "/health-journey/blood-pressure",
+    "/health-journey/blood-glucose", "/health-journey/medications",
+    "/health-journey/visit-preparation", "/health-journey/report",
+    "/health-journey/downloads",
   ];
   const now = new Date();
   const base = routes.map((r) => ({

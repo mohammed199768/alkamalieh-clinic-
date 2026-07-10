@@ -27,6 +27,7 @@ export default function SiteFooter({ force = false }: { force?: boolean }) {
     { ar: "تواصل معنا", en: "Contact", href: "/contact" },
     { ar: "الأسئلة الشائعة", en: "FAQ", href: "/faq" },
     { ar: "الخصوصية", en: "Privacy", href: "/privacy" },
+    { ar: "رفيق صحتك", en: "Health Companion", href: "/health-journey" },
   ];
 
   const onSubscribe = async (e: React.FormEvent) => {

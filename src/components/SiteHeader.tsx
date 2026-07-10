@@ -14,6 +14,7 @@ type Group = { ar: string; en: string; href?: string; items?: Item[]; match?: st
 
 const MAIN: Item[] = [
   { ar: "الرئيسية", en: "Home", href: "/", icon: "home" },
+  { ar: "رفيق صحتك", en: "Health Companion", href: "/health-journey", icon: "heart-pulse" },
   { ar: "الخدمات", en: "Services", href: "/services", icon: "stethoscope" },
   { ar: "تواصل معنا", en: "Contact us", href: "/contact", icon: "headset" },
 ];
@@ -37,10 +38,10 @@ const CONTENT: Item[] = [
 
 const KIDS: Item[] = [
   { ar: "صغيرنا الذكي", en: "Smart Little One", href: "/kids", icon: "users" },
-  { ar: "تحدي الذكاء المرح", en: "Fun Brain Challenge", href: "/kids/brain-challenge", icon: "star" },
-  { ar: "لعبة الذاكرة الصحية", en: "Memory game", href: "/kids/memory-game", icon: "sparkle" },
+  { ar: "تحدي الذكاء المرح", en: "Fun Brain Challenge", href: "/kids/brain-challenge", icon: "brain" },
+  { ar: "لعبة الذاكرة الصحية", en: "Memory game", href: "/kids/memory-game", icon: "activity" },
   { ar: "صح أم خطأ الصحي", en: "Healthy quiz", href: "/kids/healthy-quiz", icon: "check" },
-  { ar: "رتّب العادة الصحية", en: "Habit sort", href: "/kids/habit-sort", icon: "star" },
+  { ar: "رتّب العادة الصحية", en: "Habit sort", href: "/kids/habit-sort", icon: "check" },
   { ar: "حكايات المساء", en: "Evening Stories", href: "/bedtime-stories", icon: "bed" },
 ];
 
@@ -53,6 +54,7 @@ const GROUPS: Group[] = [
   { ar: "الرئيسية", en: "Home", href: "/" },
   { ar: "الخدمات", en: "Services", href: "/services" },
   { ar: "المحتوى الطبي", en: "Medical Content", href: "/medical-minute", match: ["/medical-tips", "/daily-stories", "/videos", "/faq"] },
+  { ar: "رفيق صحتك", en: "Health Companion", href: "/health-journey" },
   { ar: "العائلة والأطفال", en: "Family & Kids", items: KIDS },
   { ar: "اعرف نفسك", en: "Know Yourself", href: "/know-yourself" },
   { ar: "تواصل معنا", en: "Contact Us", href: "/contact" },
@@ -70,7 +72,7 @@ export default function SiteHeader() {
   }, [pathname]);
 
   const groupActive = (g: Group) =>
-    (g.href && (pathname === g.href || (g.match?.includes(pathname ?? "") ?? false))) ||
+    (g.href && (pathname === g.href || (g.href !== "/" && pathname?.startsWith(`${g.href}/`)) || (g.match?.includes(pathname ?? "") ?? false))) ||
     (g.items?.some((i) => !i.external && i.href.split("#")[0] === pathname) ?? false);
 
   return (

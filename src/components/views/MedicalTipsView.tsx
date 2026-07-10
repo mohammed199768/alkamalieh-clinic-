@@ -6,6 +6,7 @@ import SectionShell from "@/components/SectionShell";
 import MedicalTipCard from "@/components/MedicalTipCard";
 import DisclaimerNote from "@/components/DisclaimerNote";
 import tips from "@/data/medicalTips.json";
+import { HealthCompanionBridge } from "@/components/health-journey/HealthCompanionBridge";
 
 const CATS = [
   { id: "all", ar: "الكل", en: "All" },
@@ -25,6 +26,7 @@ export default function MedicalTipsView() {
     <>
       <PageHeader ar="نصائح طبية" en="Medical Tips" subAr="معلومات تثقيفية مبسّطة تساعدك على العناية بنفسك وعائلتك." subEn="Simple educational tips to help you care for yourself and your family." icon="activity" />
       <SectionShell>
+        <HealthCompanionBridge source="tips" />
         <div className="mb-7 flex flex-wrap gap-2">
           {CATS.map((c) => (
             <button key={c.id} onClick={() => setCat(c.id)} className={`rounded-full px-4 py-2 text-sm font-semibold transition ${cat === c.id ? "bg-brand-600 text-white" : "bg-white text-slate-600 border border-slate-200"}`}>

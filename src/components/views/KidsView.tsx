@@ -15,7 +15,7 @@ export default function KidsView() {
     <KidsGameShell back={false}>
       <section className="mx-auto max-w-3xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-4 py-1.5 text-sm font-semibold text-brand-700 backdrop-blur">
-          <KidsObject id="star" size={18} /> {t("عالم الألعاب الآمن", "A safe games world")}
+          <Icon name="shield" className="h-[18px] w-[18px]" /> {t("عالم الألعاب الآمن", "A safe games world")}
         </span>
         <h1 className="mt-5 text-display font-extrabold text-navy-900">
           {t("صغيرنا الذكي", "Smart Little One")}

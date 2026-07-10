@@ -32,6 +32,15 @@ export default function ServicesView() {
       <ClinicTour />
 
       <SectionShell>
+        <section className="mb-10 overflow-hidden rounded-3xl border border-brand-100 bg-gradient-to-br from-brand-50 to-cyan-50 p-6 shadow-card sm:p-8">
+          <div className="grid items-center gap-7 md:grid-cols-[1fr_auto]">
+            <div className="flex items-start gap-4">
+              <span className="icon-pad h-12 w-12 shrink-0 bg-white"><Icon name="heart-pulse" className="h-6 w-6" /></span>
+              <div><p className="text-xs font-bold uppercase tracking-widest text-brand-600">{t("دعم المريض", "Patient support")}</p><h2 className="mt-2 text-h2 font-extrabold text-navy-900">{t("رفيق صحتك", "Health Companion")}</h2><p className="mt-2 max-w-2xl text-navy-600">{t("أدوات تساعدك بين زيارة وأخرى: رتّب قياساتك وأدويتك، استعد لموعدك، واطبع ملخصًا واضحًا دون إنشاء حساب.", "Tools that support you between visits: organize measurements and medications, prepare for appointments, and print a clear summary without an account.")}</p></div>
+            </div>
+            <Link href="/health-journey" className="btn-primary w-full md:w-auto">{t("ابدأ رحلتك الصحية", "Start your health journey")}<Icon name="arrow" className="h-4 w-4 rtl:rotate-180" /></Link>
+          </div>
+        </section>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {gridServices.map((s) => (
             <div key={s.id} id={s.id} className="scroll-mt-24">

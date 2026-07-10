@@ -6,8 +6,7 @@ import Icon from "@/components/Icon";
 
 /**
  * Light, playful surface shared by every kids game and the hub — matches the
- * site's visual identity (soft sky gradient, gentle pastel glows, quiet
- * sparkles). Decorative animations only, respecting prefers-reduced-motion.
+ * site's visual identity (soft sky gradient and gentle pastel glows).
  */
 export default function KidsGameShell({
   children,
@@ -25,9 +24,6 @@ export default function KidsGameShell({
         <div className="absolute right-[-6rem] top-24 h-72 w-72 rounded-full bg-brand-200/40 blur-3xl" />
         <div className="absolute bottom-[-6rem] left-1/3 h-80 w-80 rounded-full bg-[#d9d2ff]/40 blur-3xl" />
       </div>
-      {/* quiet sparkles */}
-      <Sparkles />
-
       <div className="container-x relative z-10 py-8 sm:py-12">
         {back && (
           <Link
@@ -40,32 +36,6 @@ export default function KidsGameShell({
         )}
         {children}
       </div>
-    </div>
-  );
-}
-
-function Sparkles() {
-  // Deterministic positions so SSR and client markup match.
-  const dots = [
-    [8, 14, 5], [18, 40, 4], [27, 12, 3], [36, 60, 5], [44, 22, 4],
-    [55, 48, 3], [63, 16, 5], [72, 52, 4], [81, 28, 3], [90, 44, 5],
-    [12, 70, 4], [33, 84, 3], [49, 76, 5], [68, 80, 4], [86, 68, 3],
-  ];
-  return (
-    <div className="pointer-events-none absolute inset-0">
-      {dots.map(([x, y, r], i) => (
-        <span
-          key={i}
-          className="absolute rounded-full bg-brand-300/50 motion-safe:animate-pulseSoft"
-          style={{
-            left: `${x}%`,
-            top: `${y}%`,
-            width: `${r}px`,
-            height: `${r}px`,
-            animationDelay: `${(i % 5) * 0.5}s`,
-          }}
-        />
-      ))}
     </div>
   );
 }

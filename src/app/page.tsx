@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import SplashScreen from "@/components/home/SplashScreen";
 import HeroEditorial from "@/components/home/HeroEditorial";
 import CareMosaic from "@/components/home/CareMosaic";
+import HealthCompanionFeature from "@/components/home/HealthCompanionFeature";
 import HomeClinicTour from "@/components/home/HomeClinicTour";
 import VisitBooking from "@/components/home/VisitBooking";
 import HomeSectionPager from "@/components/home/HomeSectionPager";
@@ -26,6 +27,7 @@ export default function HomePage() {
   const panels = [
     <HeroEditorial key="hero" />,
     <CareMosaic key="mosaic" />,
+    <HealthCompanionFeature key="health-companion" />,
     <HomeClinicTour key="tour" />,
     <VisitBooking key="visit" />,
     <SiteFooter key="footer" force />,

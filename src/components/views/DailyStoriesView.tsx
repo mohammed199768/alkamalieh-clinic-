@@ -9,6 +9,7 @@ import Icon from "@/components/Icon";
 import StoryDialog from "@/components/daily-stories/StoryDialog";
 import { DAILY_STORIES, getStory, type DailyStory } from "@/data/dailyStories";
 import { CLINIC_PHOTOS } from "@/data/clinicMedia";
+import { HealthCompanionBridge } from "@/components/health-journey/HealthCompanionBridge";
 
 export default function DailyStoriesView() {
   const { lang, t } = useLang();
@@ -54,6 +55,7 @@ export default function DailyStoriesView() {
       />
 
       <SectionShell>
+        <HealthCompanionBridge source="stories" />
         {/* Featured story */}
         <Reveal>
           <button
